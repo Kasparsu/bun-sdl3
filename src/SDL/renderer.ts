@@ -47,11 +47,11 @@ export function updateSurface(window: SDLWindow): boolean {
 }
 
 export function savePNG(surface: any, file: string): boolean {
-  return Boolean(sdl.SDL_SavePNG(surface as any, file as unknown as CString));
+  return Boolean(sdl.SDL_SavePNG(surface as any, Buffer.from(file + "\0") as unknown as CString));
 }
 
 export function saveBMP(surface: any, file: string): boolean {
-  return Boolean(sdl.SDL_SaveBMP(surface as any, file as unknown as CString));
+  return Boolean(sdl.SDL_SaveBMP(surface as any, Buffer.from(file + "\0") as unknown as CString));
 }
 
 export function destroySurface(surface: any): void {

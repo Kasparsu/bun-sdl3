@@ -2,7 +2,7 @@ import sdl from "../index";
 import type { CString } from "bun:ffi";
 
 export function set(text: string): boolean {
-  return Boolean(sdl.SDL_SetClipboardText(text as unknown as CString));
+  return Boolean(sdl.SDL_SetClipboardText(Buffer.from(text + "\0") as unknown as CString));
 }
 
 export function get(): string {

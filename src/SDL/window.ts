@@ -20,7 +20,7 @@ export const WINDOW = {
 } as const;
 
 export function create(title: string, w: number, h: number, flags: number | bigint): SDLWindow {
-  return sdl.SDL_CreateWindow(title as unknown as CString, w, h, flags as any) as Pointer as SDLWindow;
+  return sdl.SDL_CreateWindow(Buffer.from(title + "\0") as unknown as CString, w, h, flags as any) as Pointer as SDLWindow;
 }
 
 export function destroy(window: SDLWindow): void {
@@ -28,7 +28,7 @@ export function destroy(window: SDLWindow): void {
 }
 
 export function setTitle(window: SDLWindow, title: string): boolean {
-  return Boolean(sdl.SDL_SetWindowTitle(window as any, title as unknown as CString));
+  return Boolean(sdl.SDL_SetWindowTitle(window as any, Buffer.from(title + "\0") as unknown as CString));
 }
 
 export function getTitle(window: SDLWindow): string {
