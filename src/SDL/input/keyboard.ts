@@ -1,5 +1,20 @@
 import sdl from "../../index";
 import type { CString } from "bun:ffi";
+import * as T from "../../types";
+
+function pick(prefix: string) {
+  const out: Record<string, any> = {};
+  for (const k in T) {
+    if (k.startsWith(prefix)) {
+      out[k.slice(prefix.length)] = (T as any)[k];
+    }
+  }
+  return out;
+}
+
+export const KEYMOD = pick("SDL_KMOD_");
+export const KEYCODE = pick("SDLK_");
+export const SCANCODE = T.SDLScancode;
 
 export function getName(scancode: number): string {
   return sdl.SDL_GetScancodeName(scancode as any) as unknown as string;
