@@ -205,28 +205,6 @@ export type SDLRenderer = Pointer;
 /** Opaque pointer to an SDL_Texture */
 export type SDLTexture = Pointer;
 
-/** love2d cursor type names */
-export type CursorType =
-  | "arrow" | "ibeam" | "wait" | "crosshair" | "waitarrow"
-  | "sizenwse" | "sizenesw" | "sizewe" | "sizens" | "sizeall"
-  | "no" | "hand";
-
-/** Map from love2d cursor name → SDL_SystemCursor enum value */
-export const CURSOR_TYPE_TO_SDL: Record<CursorType, number> = {
-  arrow: 0,       // SDL_SYSTEM_CURSOR_DEFAULT
-  ibeam: 1,       // SDL_SYSTEM_CURSOR_TEXT
-  wait: 2,        // SDL_SYSTEM_CURSOR_WAIT
-  crosshair: 3,   // SDL_SYSTEM_CURSOR_CROSSHAIR
-  waitarrow: 4,   // SDL_SYSTEM_CURSOR_PROGRESS
-  sizenwse: 5,    // SDL_SYSTEM_CURSOR_NWSE_RESIZE
-  sizenesw: 6,    // SDL_SYSTEM_CURSOR_NESW_RESIZE
-  sizewe: 7,      // SDL_SYSTEM_CURSOR_EW_RESIZE
-  sizens: 8,      // SDL_SYSTEM_CURSOR_NS_RESIZE
-  sizeall: 9,     // SDL_SYSTEM_CURSOR_MOVE
-  no: 10,         // SDL_SYSTEM_CURSOR_NOT_ALLOWED
-  hand: 11,       // SDL_SYSTEM_CURSOR_POINTER
-};
-
 // --- GPU Shader structs and constants ---
 
 // SDL_GPUShaderCreateInfo struct offsets (64-bit Linux, 56 bytes total)
@@ -325,75 +303,3 @@ export const SDL_HAT_RIGHT = 0x02;
 export const SDL_HAT_DOWN = 0x04;
 export const SDL_HAT_LEFT = 0x08;
 
-/** Map SDL hat value → love2d direction string */
-export const HAT_DIRECTION_NAMES: Record<number, string> = {
-  0x00: "c",   // centered
-  0x01: "u",   // up
-  0x02: "r",   // right
-  0x04: "d",   // down
-  0x08: "l",   // left
-  0x03: "ru",  // right-up
-  0x06: "rd",  // right-down
-  0x09: "lu",  // left-up
-  0x0c: "ld",  // left-down
-};
-
-/** Map SDL gamepad button enum → love2d button name */
-export const GAMEPAD_BUTTON_NAMES: Record<number, string> = {
-  0: "a", 1: "b", 2: "x", 3: "y",
-  4: "back", 5: "guide", 6: "start",
-  7: "leftstick", 8: "rightstick",
-  9: "leftshoulder", 10: "rightshoulder",
-  11: "dpup", 12: "dpdown", 13: "dpleft", 14: "dpright",
-};
-
-/** Map love2d button name → SDL gamepad button enum */
-export const GAMEPAD_BUTTON_FROM_NAME: Record<string, number> = {
-  a: 0, b: 1, x: 2, y: 3,
-  back: 4, guide: 5, start: 6,
-  leftstick: 7, rightstick: 8,
-  leftshoulder: 9, rightshoulder: 10,
-  dpup: 11, dpdown: 12, dpleft: 13, dpright: 14,
-};
-
-/** Map SDL gamepad axis enum → love2d axis name */
-export const GAMEPAD_AXIS_NAMES: Record<number, string> = {
-  0: "leftx", 1: "lefty", 2: "rightx", 3: "righty",
-  4: "triggerleft", 5: "triggerright",
-};
-
-/** Map love2d axis name → SDL gamepad axis enum */
-export const GAMEPAD_AXIS_FROM_NAME: Record<string, number> = {
-  leftx: 0, lefty: 1, rightx: 2, righty: 3,
-  triggerleft: 4, triggerright: 5,
-};
-
-/**
- * SDL scancode → love2d-style key name mapping.
- * Based on SDL_Scancode enum values.
- */
-export const SCANCODE_NAMES: Record<number, string> = {
-  4: "a", 5: "b", 6: "c", 7: "d", 8: "e", 9: "f", 10: "g", 11: "h",
-  12: "i", 13: "j", 14: "k", 15: "l", 16: "m", 17: "n", 18: "o", 19: "p",
-  20: "q", 21: "r", 22: "s", 23: "t", 24: "u", 25: "v", 26: "w", 27: "x",
-  28: "y", 29: "z",
-  30: "1", 31: "2", 32: "3", 33: "4", 34: "5", 35: "6", 36: "7", 37: "8",
-  38: "9", 39: "0",
-  40: "return", 41: "escape", 42: "backspace", 43: "tab", 44: "space",
-  45: "-", 46: "=", 47: "[", 48: "]", 49: "\\",
-  51: ";", 52: "'", 53: "`", 54: ",", 55: ".", 56: "/",
-  57: "capslock",
-  58: "f1", 59: "f2", 60: "f3", 61: "f4", 62: "f5", 63: "f6",
-  64: "f7", 65: "f8", 66: "f9", 67: "f10", 68: "f11", 69: "f12",
-  70: "printscreen", 71: "scrolllock", 72: "pause",
-  73: "insert", 74: "home", 75: "pageup",
-  76: "delete", 77: "end", 78: "pagedown",
-  79: "right", 80: "left", 81: "down", 82: "up",
-  83: "numlock",
-  84: "kp/", 85: "kp*", 86: "kp-", 87: "kp+", 88: "kpenter",
-  89: "kp1", 90: "kp2", 91: "kp3", 92: "kp4", 93: "kp5",
-  94: "kp6", 95: "kp7", 96: "kp8", 97: "kp9", 98: "kp0",
-  99: "kp.",
-  224: "lctrl", 225: "lshift", 226: "lalt", 227: "lgui",
-  228: "rctrl", 229: "rshift", 230: "ralt", 231: "rgui",
-};
