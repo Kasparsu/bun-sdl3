@@ -1,4 +1,5 @@
 import sdl from "../../index";
+import * as T from "../../types";
 
 export function state(): { x: number; y: number; buttons: number } {
   const px = new Int32Array(1);
@@ -7,9 +8,18 @@ export function state(): { x: number; y: number; buttons: number } {
   return { x: px[0] as number, y: py[0] as number, buttons };
 }
 
-import { pick } from "../pick";
-
-export const BUTTON = pick("SDL_BUTTON_");
+export const BUTTON = {
+  LEFT: T.SDL_BUTTON_LEFT,
+  MIDDLE: T.SDL_BUTTON_MIDDLE,
+  RIGHT: T.SDL_BUTTON_RIGHT,
+  X1: T.SDL_BUTTON_X1,
+  X2: T.SDL_BUTTON_X2,
+  LMASK: T.SDL_BUTTON_LMASK,
+  MMASK: T.SDL_BUTTON_MMASK,
+  RMASK: T.SDL_BUTTON_RMASK,
+  X1MASK: T.SDL_BUTTON_X1MASK,
+  X2MASK: T.SDL_BUTTON_X2MASK,
+} as const;
 
 export function warp(window: any, x: number, y: number): void {
   sdl.SDL_WarpMouseInWindow(window as any, x, y);

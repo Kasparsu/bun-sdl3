@@ -2,9 +2,22 @@ import sdl from "../index";
 import { ptr } from "bun:ffi";
 import type { Pointer, CString } from "bun:ffi";
 import type { SDLWindow } from "../types";
-import { pick } from "./pick";
+import * as T from "../types";
 
-export const WINDOW = pick("SDL_WINDOW_");
+export const WINDOW = {
+  FULLSCREEN: T.SDL_WINDOW_FULLSCREEN,
+  OPENGL: T.SDL_WINDOW_OPENGL,
+  HIDDEN: T.SDL_WINDOW_HIDDEN,
+  BORDERLESS: T.SDL_WINDOW_BORDERLESS,
+  RESIZABLE: T.SDL_WINDOW_RESIZABLE,
+  MINIMIZED: T.SDL_WINDOW_MINIMIZED,
+  MAXIMIZED: T.SDL_WINDOW_MAXIMIZED,
+  HIGH_PIXEL_DENSITY: T.SDL_WINDOW_HIGH_PIXEL_DENSITY,
+  ALWAYS_ON_TOP: T.SDL_WINDOW_ALWAYS_ON_TOP,
+  INPUT_FOCUS: T.SDL_WINDOW_INPUT_FOCUS,
+  MOUSE_FOCUS: T.SDL_WINDOW_MOUSE_FOCUS,
+  VULKAN: T.SDL_WINDOW_VULKAN,
+} as const;
 
 export function create(title: string, w: number, h: number, flags: number | bigint): SDLWindow {
   return sdl.SDL_CreateWindow(title as unknown as CString, w, h, flags as any) as Pointer as SDLWindow;
