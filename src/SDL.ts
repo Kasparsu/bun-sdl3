@@ -26,6 +26,15 @@ export class SDL {
   static InitFlags: Record<string, any>;
   static INIT: Record<string, any>;
 
+  // Runtime-attached namespaces (modules) for convenience
+  static Window: any;
+  static Display: any;
+  static Input: any;
+  static Renderer: any;
+  static Events: any;
+  static Clipboard: any;
+  static Errors: any;
+
   // core helpers remain on SDL
 
   // Misc
