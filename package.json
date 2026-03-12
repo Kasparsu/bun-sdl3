@@ -1,0 +1,14 @@
+{
+  "name": "bun-sdl3",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "install": "sh ./script/build-sdl3.sh"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
