@@ -44,6 +44,7 @@ import {
 export interface BaseEvent {
   type: number;
   timestamp?: number;
+  name?: string;
 }
 
 export interface KeyboardEvent extends BaseEvent {
@@ -104,6 +105,40 @@ export type ParsedEvent =
   | JoyHatEvent
   | BaseEvent;
 
+function eventName(type: number): string {
+  switch (type) {
+    case 0x100: return "QUIT";
+    case 0x200: return "WINDOW";
+    case 0x202: return "WINDOW_SHOWN";
+    case 0x203: return "WINDOW_HIDDEN";
+    case 0x204: return "WINDOW_EXPOSED";
+    case 0x205: return "WINDOW_MOVED";
+    case 0x206: return "WINDOW_RESIZED";
+    case 0x207: return "WINDOW_PIXEL_SIZE_CHANGED";
+    case 0x209: return "WINDOW_MINIMIZED";
+    case 0x20a: return "WINDOW_MAXIMIZED";
+    case 0x20b: return "WINDOW_RESTORED";
+    case 0x20e: return "WINDOW_FOCUS_GAINED";
+    case 0x20f: return "WINDOW_FOCUS_LOST";
+    case 0x210: return "WINDOW_CLOSE_REQUESTED";
+    case SDL_EVENT_KEY_DOWN: return "KEY_DOWN";
+    case SDL_EVENT_KEY_UP: return "KEY_UP";
+    case SDL_EVENT_MOUSE_MOTION: return "MOUSE_MOTION";
+    case SDL_EVENT_MOUSE_BUTTON_DOWN: return "MOUSE_BUTTON_DOWN";
+    case SDL_EVENT_MOUSE_BUTTON_UP: return "MOUSE_BUTTON_UP";
+    case SDL_EVENT_MOUSE_WHEEL: return "MOUSE_WHEEL";
+    case SDL_EVENT_JOYSTICK_AXIS_MOTION: return "JOY_AXIS";
+    case SDL_EVENT_JOYSTICK_HAT_MOTION: return "JOY_HAT";
+    case SDL_EVENT_JOYSTICK_BUTTON_DOWN: return "JOY_BUTTON_DOWN";
+    case SDL_EVENT_JOYSTICK_BUTTON_UP: return "JOY_BUTTON_UP";
+    case SDL_EVENT_GAMEPAD_AXIS_MOTION: return "GAMEPAD_AXIS";
+    case SDL_EVENT_GAMEPAD_BUTTON_DOWN: return "GAMEPAD_BUTTON_DOWN";
+    case SDL_EVENT_GAMEPAD_BUTTON_UP: return "GAMEPAD_BUTTON_UP";
+    default:
+      return `EVENT_0x${type.toString(16)}`;
+  }
+}
+
 // Parse an SDL_Event stored in an ArrayBuffer (SDL uses little-endian on x86-64)
 export function parseEvent(buf: ArrayBuffer): ParsedEvent {
   const dv = new DataView(buf);
@@ -117,7 +152,7 @@ export function parseEvent(buf: ArrayBuffer): ParsedEvent {
       const mod = dv.getUint32(SDL_KEYBOARD_EVENT_MOD, true);
       const down = !!dv.getUint8(SDL_KEYBOARD_EVENT_DOWN);
       const repeat = !!dv.getUint8(SDL_KEYBOARD_EVENT_REPEAT);
-      return { type, scancode, key, mod, down, repeat } as KeyboardEvent;
+      return { type, scancode, key, mod, down, repeat, name: eventName(type) } as KeyboardEvent;
     }
     case SDL_EVENT_MOUSE_MOTION: {
       const state = dv.getUint32(SDL_MOUSE_MOTION_STATE, true);
@@ -125,7 +160,7 @@ export function parseEvent(buf: ArrayBuffer): ParsedEvent {
       const y = dv.getInt32(SDL_MOUSE_MOTION_Y, true);
       const xrel = dv.getInt32(SDL_MOUSE_MOTION_XREL, true);
       const yrel = dv.getInt32(SDL_MOUSE_MOTION_YREL, true);
-      return { type, state, x, y, xrel, yrel } as MouseMotionEvent;
+      return { type, state, x, y, xrel, yrel, name: eventName(type) } as MouseMotionEvent;
     }
     case SDL_EVENT_MOUSE_BUTTON_DOWN:
     case SDL_EVENT_MOUSE_BUTTON_UP: {
@@ -134,20 +169,20 @@ export function parseEvent(buf: ArrayBuffer): ParsedEvent {
       const clicks = dv.getUint8(SDL_MOUSE_BUTTON_CLICKS);
       const x = dv.getInt32(SDL_MOUSE_BUTTON_X, true);
       const y = dv.getInt32(SDL_MOUSE_BUTTON_Y, true);
-      return { type, button, down, clicks, x, y } as MouseButtonEvent;
+      return { type, button, down, clicks, x, y, name: eventName(type) } as MouseButtonEvent;
     }
     case SDL_EVENT_MOUSE_WHEEL: {
       const x = dv.getInt32(SDL_MOUSE_WHEEL_X, true);
       const y = dv.getInt32(SDL_MOUSE_WHEEL_Y, true);
       const direction = dv.getInt32(SDL_MOUSE_WHEEL_DIR, true);
-      return { type, x, y, direction } as MouseWheelEvent;
+      return { type, x, y, direction, name: eventName(type) } as MouseWheelEvent;
     }
     case SDL_EVENT_JOYSTICK_AXIS_MOTION:
     case SDL_EVENT_GAMEPAD_AXIS_MOTION: {
       const which = dv.getUint32(SDL_JOY_EVENT_WHICH, true);
       const axis = dv.getUint8(SDL_JOY_AXIS_EVENT_AXIS);
       const value = dv.getInt16(SDL_JOY_AXIS_EVENT_VALUE, true);
-      return { type, which, axis, value } as JoyAxisEvent;
+      return { type, which, axis, value, name: eventName(type) } as JoyAxisEvent;
     }
     case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
     case SDL_EVENT_JOYSTICK_BUTTON_UP:
@@ -156,16 +191,16 @@ export function parseEvent(buf: ArrayBuffer): ParsedEvent {
       const which = dv.getUint32(SDL_JOY_EVENT_WHICH, true);
       const button = dv.getUint8(SDL_JOY_BUTTON_EVENT_BUTTON);
       const down = !!dv.getUint8(SDL_JOY_BUTTON_EVENT_DOWN);
-      return { type, which, button, down } as JoyButtonEvent;
+      return { type, which, button, down, name: eventName(type) } as JoyButtonEvent;
     }
     case SDL_EVENT_JOYSTICK_HAT_MOTION: {
       const which = dv.getUint32(SDL_JOY_EVENT_WHICH, true);
       const hat = dv.getUint8(SDL_JOY_HAT_EVENT_HAT);
       const value = dv.getUint8(SDL_JOY_HAT_EVENT_VALUE);
-      return { type, which, hat, value } as JoyHatEvent;
+      return { type, which, hat, value, name: eventName(type) } as JoyHatEvent;
     }
     default:
-      return { type } as BaseEvent;
+      return { type, name: eventName(type) } as BaseEvent;
   }
 }
 
