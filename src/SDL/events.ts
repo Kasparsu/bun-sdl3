@@ -1,20 +1,238 @@
 import sdl from "../index";
 import { ptr } from "bun:ffi";
+import * as T from "../types";
 
-import { SDL_EVENT_SIZE } from "../types";
-import { parseEvent } from "../events";
+// Re-export common event constants for convenience
+export const QUIT = T.SDL_EVENT_QUIT;
+export const WINDOW_SHOWN = T.SDL_EVENT_WINDOW_SHOWN;
+export const WINDOW_HIDDEN = T.SDL_EVENT_WINDOW_HIDDEN;
+export const WINDOW_EXPOSED = T.SDL_EVENT_WINDOW_EXPOSED;
+export const WINDOW_MOVED = T.SDL_EVENT_WINDOW_MOVED;
+export const WINDOW_RESIZED = T.SDL_EVENT_WINDOW_RESIZED;
+export const WINDOW_PIXEL_SIZE_CHANGED = T.SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+export const WINDOW_MINIMIZED = T.SDL_EVENT_WINDOW_MINIMIZED;
+export const WINDOW_MAXIMIZED = T.SDL_EVENT_WINDOW_MAXIMIZED;
+export const WINDOW_RESTORED = T.SDL_EVENT_WINDOW_RESTORED;
+export const WINDOW_FOCUS_GAINED = T.SDL_EVENT_WINDOW_FOCUS_GAINED;
+export const WINDOW_FOCUS_LOST = T.SDL_EVENT_WINDOW_FOCUS_LOST;
+export const WINDOW_CLOSE_REQUESTED = T.SDL_EVENT_WINDOW_CLOSE_REQUESTED;
 
+export const KEY_DOWN = T.SDL_EVENT_KEY_DOWN;
+export const KEY_UP = T.SDL_EVENT_KEY_UP;
 
-export function poll(): ReturnType<typeof parseEvent> | null {
-  const buf = new ArrayBuffer(SDL_EVENT_SIZE);
+export const MOUSE_MOTION = T.SDL_EVENT_MOUSE_MOTION;
+export const MOUSE_BUTTON_DOWN = T.SDL_EVENT_MOUSE_BUTTON_DOWN;
+export const MOUSE_BUTTON_UP = T.SDL_EVENT_MOUSE_BUTTON_UP;
+export const MOUSE_WHEEL = T.SDL_EVENT_MOUSE_WHEEL;
+
+export const JOYSTICK_AXIS = T.SDL_EVENT_JOYSTICK_AXIS_MOTION;
+export const JOYSTICK_HAT = T.SDL_EVENT_JOYSTICK_HAT_MOTION;
+export const JOYSTICK_BUTTON_DOWN = T.SDL_EVENT_JOYSTICK_BUTTON_DOWN;
+export const JOYSTICK_BUTTON_UP = T.SDL_EVENT_JOYSTICK_BUTTON_UP;
+
+export const GAMEPAD_AXIS = T.SDL_EVENT_GAMEPAD_AXIS_MOTION;
+export const GAMEPAD_BUTTON_DOWN = T.SDL_EVENT_GAMEPAD_BUTTON_DOWN;
+export const GAMEPAD_BUTTON_UP = T.SDL_EVENT_GAMEPAD_BUTTON_UP;
+
+// Typed event payloads (mirrors previous `src/events.ts` types)
+export interface BaseEvent {
+  type: number;
+  timestamp?: number;
+  name?: string;
+}
+
+export interface KeyboardEvent extends BaseEvent {
+  scancode: number;
+  key: number;
+  mod: number;
+  down: boolean;
+  repeat: boolean;
+}
+
+export interface MouseMotionEvent extends BaseEvent {
+  state: number;
+  x: number;
+  y: number;
+  xrel: number;
+  yrel: number;
+}
+
+export interface MouseButtonEvent extends BaseEvent {
+  button: number;
+  down: boolean;
+  clicks: number;
+  x: number;
+  y: number;
+}
+
+export interface MouseWheelEvent extends BaseEvent {
+  x: number;
+  y: number;
+  direction: number;
+}
+
+export interface JoyAxisEvent extends BaseEvent {
+  which: number;
+  axis: number;
+  value: number;
+}
+
+export interface JoyButtonEvent extends BaseEvent {
+  which: number;
+  button: number;
+  down: boolean;
+}
+
+export interface JoyHatEvent extends BaseEvent {
+  which: number;
+  hat: number;
+  value: number;
+}
+
+export type ParsedEvent =
+  | KeyboardEvent
+  | MouseMotionEvent
+  | MouseButtonEvent
+  | MouseWheelEvent
+  | JoyAxisEvent
+  | JoyButtonEvent
+  | JoyHatEvent
+  | BaseEvent;
+
+function eventName(type: number): string {
+  switch (type) {
+    case T.SDL_EVENT_QUIT:
+      return "QUIT";
+    case T.SDL_EVENT_WINDOW_SHOWN:
+      return "WINDOW_SHOWN";
+    case T.SDL_EVENT_WINDOW_HIDDEN:
+      return "WINDOW_HIDDEN";
+    case T.SDL_EVENT_WINDOW_EXPOSED:
+      return "WINDOW_EXPOSED";
+    case T.SDL_EVENT_WINDOW_MOVED:
+      return "WINDOW_MOVED";
+    case T.SDL_EVENT_WINDOW_RESIZED:
+      return "WINDOW_RESIZED";
+    case T.SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+      return "WINDOW_PIXEL_SIZE_CHANGED";
+    case T.SDL_EVENT_WINDOW_MINIMIZED:
+      return "WINDOW_MINIMIZED";
+    case T.SDL_EVENT_WINDOW_MAXIMIZED:
+      return "WINDOW_MAXIMIZED";
+    case T.SDL_EVENT_WINDOW_RESTORED:
+      return "WINDOW_RESTORED";
+    case T.SDL_EVENT_WINDOW_FOCUS_GAINED:
+      return "WINDOW_FOCUS_GAINED";
+    case T.SDL_EVENT_WINDOW_FOCUS_LOST:
+      return "WINDOW_FOCUS_LOST";
+    case T.SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+      return "WINDOW_CLOSE_REQUESTED";
+    case T.SDL_EVENT_KEY_DOWN:
+      return "KEY_DOWN";
+    case T.SDL_EVENT_KEY_UP:
+      return "KEY_UP";
+    case T.SDL_EVENT_MOUSE_MOTION:
+      return "MOUSE_MOTION";
+    case T.SDL_EVENT_MOUSE_BUTTON_DOWN:
+      return "MOUSE_BUTTON_DOWN";
+    case T.SDL_EVENT_MOUSE_BUTTON_UP:
+      return "MOUSE_BUTTON_UP";
+    case T.SDL_EVENT_MOUSE_WHEEL:
+      return "MOUSE_WHEEL";
+    case T.SDL_EVENT_JOYSTICK_AXIS_MOTION:
+      return "JOY_AXIS";
+    case T.SDL_EVENT_JOYSTICK_HAT_MOTION:
+      return "JOY_HAT";
+    case T.SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+      return "JOY_BUTTON_DOWN";
+    case T.SDL_EVENT_JOYSTICK_BUTTON_UP:
+      return "JOY_BUTTON_UP";
+    case T.SDL_EVENT_GAMEPAD_AXIS_MOTION:
+      return "GAMEPAD_AXIS";
+    case T.SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+      return "GAMEPAD_BUTTON_DOWN";
+    case T.SDL_EVENT_GAMEPAD_BUTTON_UP:
+      return "GAMEPAD_BUTTON_UP";
+    default:
+      return `EVENT_0x${type.toString(16)}`;
+  }
+}
+
+// Parse an SDL_Event stored in an ArrayBuffer (SDL uses little-endian on x86-64)
+export function parseEvent(buf: ArrayBuffer): ParsedEvent {
+  const dv = new DataView(buf);
+  const type = dv.getUint32(0, true);
+
+  switch (type) {
+    case T.SDL_EVENT_KEY_DOWN:
+    case T.SDL_EVENT_KEY_UP: {
+      const scancode = dv.getUint32(T.SDL_KEYBOARD_EVENT_SCANCODE, true);
+      const key = dv.getUint32(T.SDL_KEYBOARD_EVENT_KEY, true);
+      const mod = dv.getUint32(T.SDL_KEYBOARD_EVENT_MOD, true);
+      const down = !!dv.getUint8(T.SDL_KEYBOARD_EVENT_DOWN);
+      const repeat = !!dv.getUint8(T.SDL_KEYBOARD_EVENT_REPEAT);
+      return { type, scancode, key, mod, down, repeat, name: eventName(type) } as KeyboardEvent;
+    }
+    case T.SDL_EVENT_MOUSE_MOTION: {
+      const state = dv.getUint32(T.SDL_MOUSE_MOTION_STATE, true);
+      const x = dv.getInt32(T.SDL_MOUSE_MOTION_X, true);
+      const y = dv.getInt32(T.SDL_MOUSE_MOTION_Y, true);
+      const xrel = dv.getInt32(T.SDL_MOUSE_MOTION_XREL, true);
+      const yrel = dv.getInt32(T.SDL_MOUSE_MOTION_YREL, true);
+      return { type, state, x, y, xrel, yrel, name: eventName(type) } as MouseMotionEvent;
+    }
+    case T.SDL_EVENT_MOUSE_BUTTON_DOWN:
+    case T.SDL_EVENT_MOUSE_BUTTON_UP: {
+      const button = dv.getUint8(T.SDL_MOUSE_BUTTON_BUTTON);
+      const down = !!dv.getUint8(T.SDL_MOUSE_BUTTON_DOWN);
+      const clicks = dv.getUint8(T.SDL_MOUSE_BUTTON_CLICKS);
+      const x = dv.getInt32(T.SDL_MOUSE_BUTTON_X, true);
+      const y = dv.getInt32(T.SDL_MOUSE_BUTTON_Y, true);
+      return { type, button, down, clicks, x, y, name: eventName(type) } as MouseButtonEvent;
+    }
+    case T.SDL_EVENT_MOUSE_WHEEL: {
+      const x = dv.getInt32(T.SDL_MOUSE_WHEEL_X, true);
+      const y = dv.getInt32(T.SDL_MOUSE_WHEEL_Y, true);
+      const direction = dv.getInt32(T.SDL_MOUSE_WHEEL_DIR, true);
+      return { type, x, y, direction, name: eventName(type) } as MouseWheelEvent;
+    }
+    case T.SDL_EVENT_JOYSTICK_AXIS_MOTION:
+    case T.SDL_EVENT_GAMEPAD_AXIS_MOTION: {
+      const which = dv.getUint32(T.SDL_JOY_EVENT_WHICH, true);
+      const axis = dv.getUint8(T.SDL_JOY_AXIS_EVENT_AXIS);
+      const value = dv.getInt16(T.SDL_JOY_AXIS_EVENT_VALUE, true);
+      return { type, which, axis, value, name: eventName(type) } as JoyAxisEvent;
+    }
+    case T.SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+    case T.SDL_EVENT_JOYSTICK_BUTTON_UP:
+    case T.SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+    case T.SDL_EVENT_GAMEPAD_BUTTON_UP: {
+      const which = dv.getUint32(T.SDL_JOY_EVENT_WHICH, true);
+      const button = dv.getUint8(T.SDL_JOY_BUTTON_EVENT_BUTTON);
+      const down = !!dv.getUint8(T.SDL_JOY_BUTTON_EVENT_DOWN);
+      return { type, which, button, down, name: eventName(type) } as JoyButtonEvent;
+    }
+    case T.SDL_EVENT_JOYSTICK_HAT_MOTION: {
+      const which = dv.getUint32(T.SDL_JOY_EVENT_WHICH, true);
+      const hat = dv.getUint8(T.SDL_JOY_HAT_EVENT_HAT);
+      const value = dv.getUint8(T.SDL_JOY_HAT_EVENT_VALUE);
+      return { type, which, hat, value, name: eventName(type) } as JoyHatEvent;
+    }
+    default:
+      return { type, name: eventName(type) } as BaseEvent;
+  }
+}
+
+export function poll(): ParsedEvent | null {
+  const buf = new ArrayBuffer(T.SDL_EVENT_SIZE);
   const p = ptr(buf);
   const ok = sdl.SDL_PollEvent(p);
   if (!ok) return null;
   return parseEvent(buf);
 }
 
-export function wait(): ReturnType<typeof parseEvent> | null {
-  const buf = new ArrayBuffer(SDL_EVENT_SIZE);
+export function wait(): ParsedEvent | null {
+  const buf = new ArrayBuffer(T.SDL_EVENT_SIZE);
   const p = ptr(buf);
   const ok = sdl.SDL_WaitEvent(p);
   if (!ok) return null;
