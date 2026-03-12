@@ -1,9 +1,9 @@
 import sdl from "../../index";
 
-export function numTouchDevices(): number {
+export function count(): number {
   return sdl.SDL_GetNumTouchDevices();
 }
 
-export function getTouchDevice(index: number) {
+export function get(index: number) {
   return sdl.SDL_GetTouchDevice(index) as any;
 }
