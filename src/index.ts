@@ -3,9 +3,226 @@
 // SDL3 FFI bindings via bun:ffi
 
 import { dlopen, FFIType, ptr, toArrayBuffer } from "bun:ffi";
+import type { CString, Pointer } from "bun:ffi";
 import { libPath } from "./lib-path";
 
-const { symbols: sdl } = dlopen(libPath("SDL3", "SDL3"), {
+type SDLAPI = {
+  // basic lifecycle
+  SDL_Init(flags: number): boolean;
+  SDL_Quit(): void;
+  SDL_GetVersion(): number;
+  SDL_GetError(): CString;
+
+  // window
+  SDL_CreateWindow(title: CString, w: number, h: number, flags: number | bigint): Pointer;
+  SDL_DestroyWindow(window: Pointer): void;
+  SDL_SetWindowTitle(window: Pointer, title: CString): boolean;
+  SDL_GetWindowTitle(window: Pointer): CString;
+  SDL_SetWindowSize(window: Pointer, w: number, h: number): boolean;
+  SDL_GetWindowSize(window: Pointer, wPtr: Pointer, hPtr: Pointer): boolean;
+  SDL_SetWindowPosition(window: Pointer, x: number, y: number): boolean;
+  SDL_GetWindowPosition(window: Pointer, xPtr: Pointer, yPtr: Pointer): boolean;
+  SDL_SetWindowFullscreen(window: Pointer, fullscreen: boolean): boolean;
+  SDL_GetWindowFlags(window: Pointer): number;
+  SDL_ShowWindow(window: Pointer): boolean;
+  SDL_HideWindow(window: Pointer): boolean;
+  SDL_MaximizeWindow(window: Pointer): boolean;
+  SDL_MinimizeWindow(window: Pointer): boolean;
+  SDL_RestoreWindow(window: Pointer): boolean;
+  SDL_SetWindowMinimumSize(window: Pointer, min_w: number, min_h: number): boolean;
+  SDL_GetWindowMinimumSize(window: Pointer, wPtr: Pointer, hPtr: Pointer): boolean;
+  SDL_GetWindowDisplayScale(window: Pointer): number;
+  SDL_GetDisplays(countPtr: Pointer): Pointer;
+  SDL_GetPrimaryDisplay(): number;
+  SDL_GetDisplayBounds(displayID: number, rectPtr: Pointer): boolean;
+  SDL_GetDisplayName(displayID: number): CString;
+  SDL_GetFullscreenDisplayModes(displayID: number, countPtr: Pointer): Pointer;
+  SDL_GetDisplayContentScale(displayID: number): number;
+  SDL_GetWindowPixelDensity(window: Pointer): number;
+  SDL_SetWindowIcon(window: Pointer, icon: Pointer): boolean;
+  SDL_FlashWindow(window: Pointer, operation: number): boolean;
+  SDL_ShowSimpleMessageBox(flags: number, title: CString, message: CString, window: Pointer): boolean;
+
+  // events
+  SDL_PollEvent(eventPtr: Pointer): boolean;
+  SDL_WaitEvent(eventPtr: Pointer): boolean;
+
+  // surface
+  SDL_GetWindowSurface(window: Pointer): Pointer;
+  SDL_UpdateWindowSurface(window: Pointer): boolean;
+  SDL_SavePNG(surface: Pointer, file: CString): boolean;
+  SDL_SaveBMP(surface: Pointer, file: CString): boolean;
+  SDL_DuplicateSurface(surface: Pointer): Pointer;
+  SDL_DestroySurface(surface: Pointer): void;
+  SDL_LockSurface(surface: Pointer): boolean;
+  SDL_UnlockSurface(surface: Pointer): void;
+
+  // renderer / textures
+  SDL_CreateRenderer(window: Pointer, name: Pointer): Pointer;
+  SDL_DestroyRenderer(renderer: Pointer): void;
+  SDL_SetRenderDrawColor(renderer: Pointer, r: number, g: number, b: number, a: number): boolean;
+  SDL_GetRenderDrawColor(renderer: Pointer, rPtr: Pointer, gPtr: Pointer, bPtr: Pointer, aPtr: Pointer): boolean;
+  SDL_RenderClear(renderer: Pointer): boolean;
+  SDL_RenderPresent(renderer: Pointer): boolean;
+  SDL_RenderPoint(renderer: Pointer, x: number, y: number): boolean;
+  SDL_RenderLine(renderer: Pointer, x1: number, y1: number, x2: number, y2: number): boolean;
+  SDL_RenderLines(renderer: Pointer, pointsPtr: Pointer, count: number): boolean;
+  SDL_RenderRect(renderer: Pointer, rectPtr: Pointer): boolean;
+  SDL_RenderFillRect(renderer: Pointer, rectPtr: Pointer): boolean;
+  SDL_RenderGeometry(renderer: Pointer, texture: Pointer, verticesPtr: Pointer, num_vertices: number, indicesPtr: Pointer, num_indices: number): boolean;
+  SDL_SetRenderDrawBlendMode(renderer: Pointer, blendMode: number): boolean;
+  SDL_RenderDebugText(renderer: Pointer, x: number, y: number, str: CString): boolean;
+  SDL_RenderReadPixels(renderer: Pointer, rectPtr: Pointer): Pointer;
+
+  // keyboard
+  SDL_GetKeyboardState(numKeysPtr: Pointer): Pointer;
+  SDL_GetKeyName(key: number): CString;
+  SDL_GetKeyFromScancode(scancode: number, modstate: number, key_event: boolean): number;
+
+  // mouse
+  SDL_GetMouseState(xPtr: Pointer, yPtr: Pointer): number;
+  SDL_WarpMouseInWindow(window: Pointer, x: number, y: number): void;
+  SDL_ShowCursor(): boolean;
+  SDL_HideCursor(): boolean;
+  SDL_CursorVisible(): boolean;
+  SDL_SetWindowMouseGrab(window: Pointer, grabbed: boolean): boolean;
+  SDL_GetWindowMouseGrab(window: Pointer): boolean;
+  SDL_SetWindowRelativeMouseMode(window: Pointer, enabled: boolean): boolean;
+  SDL_GetWindowRelativeMouseMode(window: Pointer): boolean;
+
+  // cursors
+  SDL_CreateSystemCursor(id: number): Pointer;
+  SDL_CreateColorCursor(surface: Pointer, hot_x: number, hot_y: number): Pointer;
+  SDL_SetCursor(cursor: Pointer): boolean;
+  SDL_GetCursor(): Pointer;
+  SDL_DestroyCursor(cursor: Pointer): void;
+  SDL_CreateSurfaceFrom(width: number, height: number, format: number, pixels: Pointer, pitch: number): Pointer;
+
+  // textures
+  SDL_CreateTextureFromSurface(renderer: Pointer, surface: Pointer): Pointer;
+  SDL_DestroyTexture(texture: Pointer): void;
+  SDL_RenderTexture(renderer: Pointer, texture: Pointer, srcrect: Pointer, dstrect: Pointer): boolean;
+  SDL_RenderTextureRotated(renderer: Pointer, texture: Pointer, srcrect: Pointer, dstrect: Pointer, angle: number, centerPtr: Pointer, flip: number): boolean;
+  SDL_GetTextureSize(texture: Pointer, wPtr: Pointer, hPtr: Pointer): boolean;
+  SDL_SetTextureBlendMode(texture: Pointer, blendMode: number): boolean;
+  SDL_SetTextureAlphaModFloat(texture: Pointer, alpha: number): boolean;
+  SDL_SetTextureColorModFloat(texture: Pointer, r: number, g: number, b: number): boolean;
+  SDL_SetTextureScaleMode(texture: Pointer, scaleMode: number): boolean;
+  SDL_SetRenderTextureAddressMode(renderer: Pointer, u: number, v: number): boolean;
+  SDL_UpdateTexture(texture: Pointer, rectPtr: Pointer, pixelsPtr: Pointer, pitch: number): boolean;
+  SDL_CreateTexture(renderer: Pointer, format: number, access: number, w: number, h: number): Pointer;
+  SDL_SetRenderTarget(renderer: Pointer, texture: Pointer): boolean;
+  SDL_GetRenderTarget(renderer: Pointer): Pointer;
+
+  // surface loading
+  SDL_LoadBMP(file: CString): Pointer;
+  SDL_LoadSurface(file: CString): Pointer;
+  SDL_ConvertSurface(surface: Pointer, format: number): Pointer;
+  SDL_CreateSurface(width: number, height: number, format: number): Pointer;
+  SDL_SetSurfaceColorKey(surface: Pointer, enabled: boolean, key: number): boolean;
+
+  // clipping
+  SDL_SetRenderClipRect(renderer: Pointer, rectPtr: Pointer): boolean;
+  SDL_GetRenderClipRect(renderer: Pointer, rectPtr: Pointer): boolean;
+  SDL_RenderClipEnabled(renderer: Pointer): boolean;
+
+  // blend, vsync, coords
+  SDL_GetRenderDrawBlendMode(renderer: Pointer, blendModePtr: Pointer): boolean;
+  SDL_SetRenderVSync(renderer: Pointer, vsync: number): boolean;
+  SDL_GetRenderVSync(renderer: Pointer, vsyncPtr: Pointer): boolean;
+  SDL_GetRenderOutputSize(renderer: Pointer, wPtr: Pointer, hPtr: Pointer): boolean;
+  SDL_SetRenderLogicalPresentation(renderer: Pointer, w: number, h: number, mode: number): boolean;
+  SDL_GetRenderLogicalPresentation(renderer: Pointer, wPtr: Pointer, hPtr: Pointer, modePtr: Pointer): boolean;
+  SDL_ConvertEventToRenderCoordinates(renderer: Pointer, eventPtr: Pointer): boolean;
+  SDL_RenderCoordinatesFromWindow(renderer: Pointer, window_x: number, window_y: number, xPtr: Pointer, yPtr: Pointer): boolean;
+  SDL_GetRendererName(renderer: Pointer): CString;
+
+  // clipboard
+  SDL_SetClipboardText(text: CString): boolean;
+  SDL_GetClipboardText(): CString;
+  SDL_HasClipboardText(): boolean;
+
+  // text input
+  SDL_StartTextInput(window: Pointer): boolean;
+  SDL_StopTextInput(window: Pointer): boolean;
+  SDL_TextInputActive(window: Pointer): boolean;
+
+  // audio
+  SDL_OpenAudioDevice(devid: number, specPtr: Pointer): number;
+  SDL_CloseAudioDevice(devid: number): void;
+  SDL_GetAudioDeviceFormat(devid: number, specPtr: Pointer, sampleFramesPtr: Pointer): boolean;
+  SDL_LoadWAV(path: CString, specPtr: Pointer, audioBufPtr: Pointer, audioLenPtr: Pointer): boolean;
+  SDL_CreateAudioStream(srcPtr: Pointer, dstPtr: Pointer): Pointer;
+  SDL_DestroyAudioStream(streamPtr: Pointer): void;
+  SDL_PutAudioStreamData(streamPtr: Pointer, bufPtr: Pointer, len: number): boolean;
+  SDL_FlushAudioStream(streamPtr: Pointer): boolean;
+  SDL_ClearAudioStream(streamPtr: Pointer): boolean;
+  SDL_BindAudioStream(devid: number, streamPtr: Pointer): boolean;
+  SDL_UnbindAudioStream(streamPtr: Pointer): void;
+  SDL_PauseAudioStreamDevice(streamPtr: Pointer): boolean;
+  SDL_ResumeAudioStreamDevice(streamPtr: Pointer): boolean;
+  SDL_SetAudioStreamGain(streamPtr: Pointer, gain: number): boolean;
+  SDL_GetAudioStreamGain(streamPtr: Pointer): number;
+  SDL_SetAudioStreamFrequencyRatio(streamPtr: Pointer, ratio: number): boolean;
+  SDL_GetAudioStreamFrequencyRatio(streamPtr: Pointer): number;
+  SDL_GetAudioStreamAvailable(streamPtr: Pointer): number;
+
+  // memory / system
+  SDL_free(ptr: Pointer): void;
+  SDL_GetPlatform(): CString;
+  SDL_GetNumLogicalCPUCores(): number;
+  SDL_OpenURL(url: CString): boolean;
+  SDL_GetPowerInfo(secondsPtr: Pointer, percentPtr: Pointer): number;
+
+  // GPU / shader helpers
+  SDL_CreateGPUDevice(format_flags: number, debug_mode: boolean, name: CString): Pointer;
+  SDL_ClaimWindowForGPUDevice(devicePtr: Pointer, window: Pointer): boolean;
+  SDL_DestroyGPUDevice(devicePtr: Pointer): void;
+  SDL_CreateGPURenderer(devicePtr: Pointer, window: Pointer): Pointer;
+  SDL_GetGPURendererDevice(rendererPtr: Pointer): Pointer;
+  SDL_GetGPUShaderFormats(devicePtr: Pointer): number;
+  SDL_GetGPUDeviceDriver(devicePtr: Pointer): CString;
+  SDL_CreateGPUShader(devicePtr: Pointer, createInfoPtr: Pointer): Pointer;
+  SDL_ReleaseGPUShader(devicePtr: Pointer, shaderPtr: Pointer): void;
+  SDL_CreateGPURenderState(rendererPtr: Pointer, createInfoPtr: Pointer): Pointer;
+  SDL_SetGPURenderState(rendererPtr: Pointer, statePtr: Pointer): boolean;
+  SDL_SetGPURenderStateFragmentUniforms(statePtr: Pointer, slot_index: number, dataPtr: Pointer, length: number): boolean;
+  SDL_DestroyGPURenderState(statePtr: Pointer): void;
+  SDL_ComposeCustomBlendMode(a: number, b: number, c: number, d: number, e: number, f: number): number;
+  SDL_Delay(ms: number): void;
+
+  // joystick / gamepad
+  SDL_GetJoysticks(countPtr: Pointer): Pointer;
+  SDL_OpenJoystick(instance_id: number): Pointer;
+  SDL_CloseJoystick(joystickPtr: Pointer): void;
+  SDL_GetJoystickName(joystickPtr: Pointer): CString;
+  SDL_GetJoystickNameForID(instance_id: number): CString;
+  SDL_GetJoystickID(joystickPtr: Pointer): number;
+  SDL_GetNumJoystickAxes(joystickPtr: Pointer): number;
+  SDL_GetNumJoystickButtons(joystickPtr: Pointer): number;
+  SDL_GetNumJoystickHats(joystickPtr: Pointer): number;
+  SDL_GetJoystickAxis(joystickPtr: Pointer, axis: number): number;
+  SDL_GetJoystickButton(joystickPtr: Pointer, button: number): boolean;
+  SDL_GetJoystickHat(joystickPtr: Pointer, hat: number): number;
+  SDL_JoystickConnected(joystickPtr: Pointer): boolean;
+  SDL_RumbleJoystick(joystickPtr: Pointer, low_freq: number, high_freq: number, duration_ms: number): boolean;
+  SDL_GetJoystickVendor(joystickPtr: Pointer): number;
+  SDL_GetJoystickProduct(joystickPtr: Pointer): number;
+  SDL_GetJoystickProductVersion(joystickPtr: Pointer): number;
+
+  SDL_IsGamepad(instance_id: number): boolean;
+  SDL_OpenGamepad(instance_id: number): Pointer;
+  SDL_CloseGamepad(gamepadPtr: Pointer): void;
+  SDL_GetGamepadName(gamepadPtr: Pointer): CString;
+  SDL_GetGamepadAxis(gamepadPtr: Pointer, axis: number): number;
+  SDL_GetGamepadButton(gamepadPtr: Pointer, button: number): boolean;
+  SDL_RumbleGamepad(gamepadPtr: Pointer, low_freq: number, high_freq: number, duration_ms: number): boolean;
+  SDL_GetGamepadJoystick(gamepadPtr: Pointer): Pointer;
+
+  [key: string]: any;
+};
+
+const _dl = dlopen(libPath("SDL3", "SDL3"), {
   // bool SDL_Init(SDL_InitFlags flags)
   SDL_Init: {
     args: [FFIType.u32],
@@ -971,5 +1188,7 @@ const { symbols: sdl } = dlopen(libPath("SDL3", "SDL3"), {
     returns: FFIType.pointer,
   },
 });
+
+const sdl = _dl.symbols as unknown as SDLAPI;
 
 export default sdl;
