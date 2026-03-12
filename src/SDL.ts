@@ -6,6 +6,9 @@ import * as Window from "./SDL/window";
 import * as Display from "./SDL/display";
 import * as Input from "./SDL/input";
 import * as Renderer from "./SDL/renderer";
+import * as Events from "./SDL/events";
+import * as Clipboard from "./SDL/clipboard";
+import * as Errors from "./SDL/errors";
 import type { SDLWindow } from "./types";
 import { SDL_EVENT_SIZE } from "./types";
 import * as T from "./types";
@@ -19,32 +22,7 @@ export class SDL {
     sdl.SDL_Quit();
   }
 
-  static getError(): string {
-    return sdl.SDL_GetError() as unknown as string;
-  }
-
-  static pollEvent(): { handled: boolean; buffer: ArrayBuffer } {
-    const buf = new ArrayBuffer(SDL_EVENT_SIZE);
-    const p = ptr(buf);
-    const ok = sdl.SDL_PollEvent(p);
-    return { handled: Boolean(ok), buffer: buf };
-  }
-
-  static waitEvent(): { handled: boolean; buffer: ArrayBuffer } {
-    const buf = new ArrayBuffer(SDL_EVENT_SIZE);
-    const p = ptr(buf);
-    const ok = sdl.SDL_WaitEvent(p);
-    return { handled: Boolean(ok), buffer: buf };
-  }
-
-  // Clipboard helpers left on SDL class
-  static setClipboardText(text: string): boolean {
-    return Boolean(sdl.SDL_SetClipboardText(text as unknown as CString));
-  }
-
-  static getClipboardText(): string {
-    return sdl.SDL_GetClipboardText() as unknown as string;
-  }
+  // core helpers remain on SDL
 
   // Misc
   static delay(ms: number): void {
@@ -86,3 +64,6 @@ export const SDLConstants = {
 (SDL as any).Input = Input;
 (SDL as any).Renderer = Renderer;
 (SDL as any).Constants = SDLConstants;
+(SDL as any).Events = Events;
+(SDL as any).Clipboard = Clipboard;
+(SDL as any).Errors = Errors;
