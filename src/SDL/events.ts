@@ -158,6 +158,57 @@ function eventName(type: number): string {
   }
 }
 
+// Build reverse lookup for SDLK_* constants for readable key names
+const KEY_NAME_MAP: Record<number, string> = {};
+for (const k in T) {
+  if (k.startsWith("SDLK_")) {
+    (KEY_NAME_MAP as any)[(T as any)[k]] = k.replace("SDLK_", "");
+  }
+}
+
+const MOD_FLAGS: Array<[string, number]> = [
+  ["LSHIFT", T.SDL_KMOD_LSHIFT],
+  ["RSHIFT", T.SDL_KMOD_RSHIFT],
+  ["LSHIFT|RSHIFT", T.SDL_KMOD_SHIFT],
+  ["LCTRL", T.SDL_KMOD_LCTRL],
+  ["RCTRL", T.SDL_KMOD_RCTRL],
+  ["LCTRL|RCTRL", T.SDL_KMOD_CTRL],
+  ["LALT", T.SDL_KMOD_LALT],
+  ["RALT", T.SDL_KMOD_RALT],
+  ["LGUI", T.SDL_KMOD_LGUI],
+  ["RGUI", T.SDL_KMOD_RGUI],
+  ["NUM", T.SDL_KMOD_NUM],
+  ["CAPS", T.SDL_KMOD_CAPS],
+  ["MODE", T.SDL_KMOD_MODE],
+  ["SCROLL", T.SDL_KMOD_SCROLL],
+];
+
+function modToNames(mod: number): string[] {
+  const out: string[] = [];
+  for (const [name, val] of MOD_FLAGS) {
+    if (val && (mod & (val as number)) !== 0) out.push(name);
+  }
+  return out;
+}
+
+function scancodeName(sc: number): string | undefined {
+  // SDLScancode is an enum so reverse mapping exists
+  try {
+    return (T.SDLScancode as any)[sc] as string | undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function readIntOrFloat(dv: DataView, offset: number): number {
+  const i = dv.getInt32(offset, true);
+  if (Math.abs(i) > 1_000_000) {
+    const f = dv.getFloat32(offset, true);
+    if (Number.isFinite(f) && Math.abs(f) < 1_000_000) return f;
+  }
+  return i;
+}
+
 // Parse an SDL_Event stored in an ArrayBuffer (SDL uses little-endian on x86-64)
 export function parseEvent(buf: ArrayBuffer): ParsedEvent {
   const dv = new DataView(buf);
@@ -171,24 +222,58 @@ export function parseEvent(buf: ArrayBuffer): ParsedEvent {
       const mod = dv.getUint32(T.SDL_KEYBOARD_EVENT_MOD, true);
       const down = !!dv.getUint8(T.SDL_KEYBOARD_EVENT_DOWN);
       const repeat = !!dv.getUint8(T.SDL_KEYBOARD_EVENT_REPEAT);
-      return { type, scancode, key, mod, down, repeat, name: eventName(type) } as KeyboardEvent;
+      const scName = scancodeName(scancode);
+      const keyName = (KEY_NAME_MAP as any)[key] ?? String(key);
+      const modNames = modToNames(mod);
+      return {
+        type,
+        scancode,
+        key,
+        mod,
+        down,
+        repeat,
+        name: eventName(type),
+        // Additional readable fields
+        scancodeName: scName,
+        keyName,
+        modNames,
+      } as unknown as KeyboardEvent;
     }
     case T.SDL_EVENT_MOUSE_MOTION: {
       const state = dv.getUint32(T.SDL_MOUSE_MOTION_STATE, true);
-      const x = dv.getInt32(T.SDL_MOUSE_MOTION_X, true);
-      const y = dv.getInt32(T.SDL_MOUSE_MOTION_Y, true);
-      const xrel = dv.getInt32(T.SDL_MOUSE_MOTION_XREL, true);
-      const yrel = dv.getInt32(T.SDL_MOUSE_MOTION_YREL, true);
-      return { type, state, x, y, xrel, yrel, name: eventName(type) } as MouseMotionEvent;
+      const x = readIntOrFloat(dv, T.SDL_MOUSE_MOTION_X);
+      const y = readIntOrFloat(dv, T.SDL_MOUSE_MOTION_Y);
+      const xrel = readIntOrFloat(dv, T.SDL_MOUSE_MOTION_XREL);
+      const yrel = readIntOrFloat(dv, T.SDL_MOUSE_MOTION_YREL);
+      return {
+        type,
+        state,
+        x,
+        y,
+        xrel,
+        yrel,
+        name: eventName(type),
+      } as MouseMotionEvent;
     }
     case T.SDL_EVENT_MOUSE_BUTTON_DOWN:
     case T.SDL_EVENT_MOUSE_BUTTON_UP: {
       const button = dv.getUint8(T.SDL_MOUSE_BUTTON_BUTTON);
       const down = !!dv.getUint8(T.SDL_MOUSE_BUTTON_DOWN);
       const clicks = dv.getUint8(T.SDL_MOUSE_BUTTON_CLICKS);
-      const x = dv.getInt32(T.SDL_MOUSE_BUTTON_X, true);
-      const y = dv.getInt32(T.SDL_MOUSE_BUTTON_Y, true);
-      return { type, button, down, clicks, x, y, name: eventName(type) } as MouseButtonEvent;
+      const x = readIntOrFloat(dv, T.SDL_MOUSE_BUTTON_X);
+      const y = readIntOrFloat(dv, T.SDL_MOUSE_BUTTON_Y);
+      const buttonName = button === 1 ? "LEFT" : button === 2 ? "MIDDLE" : button === 3 ? "RIGHT" : `BTN_${button}`;
+      return {
+        type,
+        button,
+        down,
+        clicks,
+        x,
+        y,
+        name: eventName(type),
+        // readable
+        buttonName,
+      } as unknown as MouseButtonEvent;
     }
     case T.SDL_EVENT_MOUSE_WHEEL: {
       const x = dv.getInt32(T.SDL_MOUSE_WHEEL_X, true);
