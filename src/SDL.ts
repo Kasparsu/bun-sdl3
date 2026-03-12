@@ -42,28 +42,10 @@ function pick(prefix: string) {
   return out;
 }
 
-export const SDLConstants = {
-  INIT: pick("SDL_INIT_"),
-  WINDOW: pick("SDL_WINDOW_"),
-  EVENT: pick("SDL_EVENT_"),
-  KEYMOD: pick("SDL_KMOD_"),
-  BUTTON: pick("SDL_BUTTON_"),
-  KEYCODE: pick("SDLK_"),
-  BLENDMODE: pick("SDL_BLENDMODE_"),
-  PIXELFORMAT: pick("SDL_PIXELFORMAT_"),
-  SCANCODE: T.SDLScancode,
-  GAMEPAD_BUTTON: pick("SDL_GAMEPAD_BUTTON_"),
-  GAMEPAD_AXIS: T.SDLGamepadAxis,
-  GPU_SHADERFORMAT: pick("SDL_GPU_SHADERFORMAT_"),
-  RENDERER_PRESENTATION: pick("SDL_LOGICAL_PRESENTATION_"),
-};
-
-// Attach submodule namespaces to `SDL` so callers can use `SDL.Window.create`, etc.
 (SDL as any).Window = Window;
 (SDL as any).Display = Display;
 (SDL as any).Input = Input;
 (SDL as any).Renderer = Renderer;
-(SDL as any).Constants = SDLConstants;
 (SDL as any).Events = Events;
 (SDL as any).Clipboard = Clipboard;
 (SDL as any).Errors = Errors;

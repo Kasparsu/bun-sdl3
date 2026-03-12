@@ -2,6 +2,22 @@ import sdl from "../index";
 import { ptr } from "bun:ffi";
 import type { Pointer, CString } from "bun:ffi";
 import type { SDLWindow } from "../types";
+import * as T from "../types";
+
+function pick(prefix: string) {
+  const out: Record<string, any> = {};
+  for (const k in T) {
+    if (k.startsWith(prefix)) {
+      out[k.slice(prefix.length)] = (T as any)[k];
+    }
+  }
+  return out;
+}
+
+export const BLENDMODE = pick("SDL_BLENDMODE_");
+export const PIXELFORMAT = pick("SDL_PIXELFORMAT_");
+export const GPU_SHADERFORMAT = pick("SDL_GPU_SHADERFORMAT_");
+export const RENDERER_PRESENTATION = pick("SDL_LOGICAL_PRESENTATION_");
 
 export function getSurface(window: SDLWindow) {
   return sdl.SDL_GetWindowSurface(window as any) as Pointer as any;

@@ -2,6 +2,19 @@ import sdl from "../index";
 import { ptr } from "bun:ffi";
 import type { Pointer, CString } from "bun:ffi";
 import type { SDLWindow } from "../types";
+import * as T from "../types";
+
+function pick(prefix: string) {
+  const out: Record<string, any> = {};
+  for (const k in T) {
+    if (k.startsWith(prefix)) {
+      out[k.slice(prefix.length)] = (T as any)[k];
+    }
+  }
+  return out;
+}
+
+export const WINDOW = pick("SDL_WINDOW_");
 
 export function create(title: string, w: number, h: number, flags: number | bigint): SDLWindow {
   return sdl.SDL_CreateWindow(title as unknown as CString, w, h, flags as any) as Pointer as SDLWindow;
