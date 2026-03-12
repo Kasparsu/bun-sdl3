@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^bun tsc --noEmit$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
