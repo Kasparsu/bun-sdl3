@@ -303,3 +303,180 @@ export const SDL_HAT_RIGHT = 0x02;
 export const SDL_HAT_DOWN = 0x04;
 export const SDL_HAT_LEFT = 0x08;
 
+/**
+ * SDL system cursor enum (values from SDL_SystemCursor)
+ */
+export enum SDLSystemCursor {
+	DEFAULT = 0,
+	TEXT = 1,
+	WAIT = 2,
+	CROSSHAIR = 3,
+	PROGRESS = 4,
+	NWSE_RESIZE = 5,
+	NESW_RESIZE = 6,
+	EW_RESIZE = 7,
+	NS_RESIZE = 8,
+	MOVE = 9,
+	NOT_ALLOWED = 10,
+	POINTER = 11,
+}
+
+/** SDL hat enum values */
+export enum SDLHat {
+	CENTERED = 0x00,
+	UP = 0x01,
+	RIGHT = 0x02,
+	DOWN = 0x04,
+	LEFT = 0x08,
+}
+
+/** SDL gamepad button enum */
+export enum SDLGamepadButton {
+	SOUTH = 0,
+	EAST = 1,
+	WEST = 2,
+	NORTH = 3,
+	BACK = 4,
+	GUIDE = 5,
+	START = 6,
+	LEFT_STICK = 7,
+	RIGHT_STICK = 8,
+	LEFT_SHOULDER = 9,
+	RIGHT_SHOULDER = 10,
+	DPAD_UP = 11,
+	DPAD_DOWN = 12,
+	DPAD_LEFT = 13,
+	DPAD_RIGHT = 14,
+}
+
+/** SDL gamepad axis enum */
+export enum SDLGamepadAxis {
+	LEFTX = 0,
+	LEFTY = 1,
+	RIGHTX = 2,
+	RIGHTY = 3,
+	LEFT_TRIGGER = 4,
+	RIGHT_TRIGGER = 5,
+}
+
+/** Partial set of SDL scancodes used in mappings (values from SDL_Scancode)
+ * These cover the scancodes previously exposed by the removed mapping.
+ */
+export enum SDLScancode {
+	A = 4,
+	B = 5,
+	C = 6,
+	D = 7,
+	E = 8,
+	F = 9,
+	G = 10,
+	H = 11,
+	I = 12,
+	J = 13,
+	K = 14,
+	L = 15,
+	M = 16,
+	N = 17,
+	O = 18,
+	P = 19,
+	Q = 20,
+	R = 21,
+	S = 22,
+	T = 23,
+	U = 24,
+	V = 25,
+	W = 26,
+	X = 27,
+	Y = 28,
+	Z = 29,
+
+	Num1 = 30,
+	Num2 = 31,
+	Num3 = 32,
+	Num4 = 33,
+	Num5 = 34,
+	Num6 = 35,
+	Num7 = 36,
+	Num8 = 37,
+	Num9 = 38,
+	Num0 = 39,
+
+	RETURN = 40,
+	ESCAPE = 41,
+	BACKSPACE = 42,
+	TAB = 43,
+	SPACE = 44,
+
+	MINUS = 45,
+	EQUALS = 46,
+	LEFTBRACKET = 47,
+	RIGHTBRACKET = 48,
+	BACKSLASH = 49,
+
+	SEMICOLON = 51,
+	APOSTROPHE = 52,
+	GRAVE = 53,
+	COMMA = 54,
+	PERIOD = 55,
+	SLASH = 56,
+
+	CAPSLOCK = 57,
+
+	F1 = 58,
+	F2 = 59,
+	F3 = 60,
+	F4 = 61,
+	F5 = 62,
+	F6 = 63,
+	F7 = 64,
+	F8 = 65,
+	F9 = 66,
+	F10 = 67,
+	F11 = 68,
+	F12 = 69,
+
+	PRINTSCREEN = 70,
+	SCROLLLOCK = 71,
+	PAUSE = 72,
+
+	INSERT = 73,
+	HOME = 74,
+	PAGEUP = 75,
+	DELETE = 76,
+	END = 77,
+	PAGEDOWN = 78,
+
+	RIGHT = 79,
+	LEFT = 80,
+	DOWN = 81,
+	UP = 82,
+
+	NUMLOCK = 83,
+	KP_DIVIDE = 84,
+	KP_MULTIPLY = 85,
+	KP_MINUS = 86,
+	KP_PLUS = 87,
+	KP_ENTER = 88,
+	KP_1 = 89,
+	KP_2 = 90,
+	KP_3 = 91,
+	KP_4 = 92,
+	KP_5 = 93,
+	KP_6 = 94,
+	KP_7 = 95,
+	KP_8 = 96,
+	KP_9 = 97,
+	KP_0 = 98,
+	KP_PERIOD = 99,
+
+	LCTRL = 224,
+	LSHIFT = 225,
+	LALT = 226,
+	LGUI = 227,
+	RCTRL = 228,
+	RSHIFT = 229,
+	RALT = 230,
+	RGUI = 231,
+}
+
+
