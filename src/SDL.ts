@@ -58,6 +58,7 @@ function pick(prefix: string) {
   }
 
   (SDL as any).InitFlags = pick("SDL_INIT_");
+  (SDL as any).INIT = (SDL as any).InitFlags;
 })();
 (SDL as any).Events = Events;
 (SDL as any).Clipboard = Clipboard;
