@@ -4,6 +4,7 @@ import { ptr } from "bun:ffi";
 import type { Pointer, CString } from "bun:ffi";
 import type { SDLWindow } from "./types";
 import { SDL_EVENT_SIZE } from "./types";
+import * as T from "./types";
 
 export class SDL {
   static init(flags: number): boolean {
@@ -51,3 +52,29 @@ export class SDL {
 }
 
 export default SDL;
+
+function pick(prefix: string) {
+  const out: Record<string, any> = {};
+  for (const k in T) {
+    if (k.startsWith(prefix)) {
+      out[k.slice(prefix.length)] = (T as any)[k];
+    }
+  }
+  return out;
+}
+
+export const SDLConstants = {
+  INIT: pick("SDL_INIT_"),
+  WINDOW: pick("SDL_WINDOW_"),
+  EVENT: pick("SDL_EVENT_"),
+  KEYMOD: pick("SDL_KMOD_"),
+  BUTTON: pick("SDL_BUTTON_"),
+  KEYCODE: pick("SDLK_"),
+  BLENDMODE: pick("SDL_BLENDMODE_"),
+  PIXELFORMAT: pick("SDL_PIXELFORMAT_"),
+  SCANCODE: T.SDLScancode,
+  GAMEPAD_BUTTON: pick("SDL_GAMEPAD_BUTTON_"),
+  GAMEPAD_AXIS: T.SDLGamepadAxis,
+  GPU_SHADERFORMAT: pick("SDL_GPU_SHADERFORMAT_"),
+  RENDERER_PRESENTATION: pick("SDL_LOGICAL_PRESENTATION_"),
+};
