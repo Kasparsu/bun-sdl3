@@ -22,6 +22,10 @@ export class SDL {
     sdl.SDL_Quit();
   }
 
+  // Declared for TypeScript: these are attached at runtime below
+  static InitFlags: Record<string, any>;
+  static INIT: Record<string, any>;
+
   // core helpers remain on SDL
 
   // Misc
