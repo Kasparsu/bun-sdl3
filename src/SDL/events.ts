@@ -4,20 +4,21 @@ import { ptr } from "bun:ffi";
 import { SDL_EVENT_SIZE } from "../types";
 import { parseEvent } from "../events";
 
-export function poll(): { handled: boolean; event: ReturnType<typeof parseEvent> | null } {
+
+export function poll(): ReturnType<typeof parseEvent> | null {
   const buf = new ArrayBuffer(SDL_EVENT_SIZE);
   const p = ptr(buf);
   const ok = sdl.SDL_PollEvent(p);
-  if (!ok) return { handled: false, event: null };
-  return { handled: true, event: parseEvent(buf) };
+  if (!ok) return null;
+  return parseEvent(buf);
 }
 
-export function wait(): { handled: boolean; event: ReturnType<typeof parseEvent> | null } {
+export function wait(): ReturnType<typeof parseEvent> | null {
   const buf = new ArrayBuffer(SDL_EVENT_SIZE);
   const p = ptr(buf);
   const ok = sdl.SDL_WaitEvent(p);
-  if (!ok) return { handled: false, event: null };
-  return { handled: true, event: parseEvent(buf) };
+  if (!ok) return null;
+  return parseEvent(buf);
 }
 
 export function parse(buf: ArrayBuffer) {
