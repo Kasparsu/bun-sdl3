@@ -1,16 +1,7 @@
 import sdl from "../../index";
 import type { CString } from "bun:ffi";
+import { pick } from "../pick";
 import * as T from "../../types";
-
-function pick(prefix: string) {
-  const out: Record<string, any> = {};
-  for (const k in T) {
-    if (k.startsWith(prefix)) {
-      out[k.slice(prefix.length)] = (T as any)[k];
-    }
-  }
-  return out;
-}
 
 export const KEYMOD = pick("SDL_KMOD_");
 export const KEYCODE = pick("SDLK_");

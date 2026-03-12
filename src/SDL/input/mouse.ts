@@ -1,15 +1,4 @@
 import sdl from "../../index";
-import * as T from "../../types";
-
-function pick(prefix: string) {
-  const out: Record<string, any> = {};
-  for (const k in T) {
-    if (k.startsWith(prefix)) {
-      out[k.slice(prefix.length)] = (T as any)[k];
-    }
-  }
-  return out;
-}
 
 export function state(): { x: number; y: number; buttons: number } {
   const px = new Int32Array(1);
@@ -17,6 +6,8 @@ export function state(): { x: number; y: number; buttons: number } {
   const buttons = sdl.SDL_GetMouseState(px.buffer as any, py.buffer as any) as number;
   return { x: px[0] as number, y: py[0] as number, buttons };
 }
+
+import { pick } from "../pick";
 
 export const BUTTON = pick("SDL_BUTTON_");
 

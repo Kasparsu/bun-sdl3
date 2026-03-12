@@ -1,16 +1,6 @@
 import sdl from "../index";
 import type { CString } from "bun:ffi";
-import * as T from "../types";
-
-function pick(prefix: string) {
-  const out: Record<string, any> = {};
-  for (const k in T) {
-    if (k.startsWith(prefix)) {
-      out[k.slice(prefix.length)] = (T as any)[k];
-    }
-  }
-  return out;
-}
+import { pick } from "./pick";
 
 export const DISPLAY = {
   // no broad display constants in types; keep placeholder

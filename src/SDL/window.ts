@@ -2,17 +2,7 @@ import sdl from "../index";
 import { ptr } from "bun:ffi";
 import type { Pointer, CString } from "bun:ffi";
 import type { SDLWindow } from "../types";
-import * as T from "../types";
-
-function pick(prefix: string) {
-  const out: Record<string, any> = {};
-  for (const k in T) {
-    if (k.startsWith(prefix)) {
-      out[k.slice(prefix.length)] = (T as any)[k];
-    }
-  }
-  return out;
-}
+import { pick } from "./pick";
 
 export const WINDOW = pick("SDL_WINDOW_");
 

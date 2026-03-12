@@ -52,15 +52,7 @@ export class SDL {
 
 export default SDL;
 
-function pick(prefix: string) {
-  const out: Record<string, any> = {};
-  for (const k in T) {
-    if (k.startsWith(prefix)) {
-      out[k.slice(prefix.length)] = (T as any)[k];
-    }
-  }
-  return out;
-}
+import { pick } from "./SDL/pick";
 
 (SDL as any).Window = Window;
 (SDL as any).Display = Display;

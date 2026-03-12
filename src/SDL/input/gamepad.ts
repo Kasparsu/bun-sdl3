@@ -1,15 +1,6 @@
 import sdl from "../../index";
+import { pick } from "../pick";
 import * as T from "../../types";
-
-function pick(prefix: string) {
-  const out: Record<string, any> = {};
-  for (const k in T) {
-    if (k.startsWith(prefix)) {
-      out[k.slice(prefix.length)] = (T as any)[k];
-    }
-  }
-  return out;
-}
 
 export function count(): number {
   return sdl.SDL_NumJoysticks();
