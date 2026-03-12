@@ -9,6 +9,13 @@ import * as Renderer from "./SDL/renderer";
 import * as Events from "./SDL/events";
 import * as Clipboard from "./SDL/clipboard";
 import * as Errors from "./SDL/errors";
+import type * as WindowModule from "./SDL/window";
+import type * as DisplayModule from "./SDL/display";
+import type * as InputModule from "./SDL/input";
+import type * as RendererModule from "./SDL/renderer";
+import type * as EventsModule from "./SDL/events";
+import type * as ClipboardModule from "./SDL/clipboard";
+import type * as ErrorsModule from "./SDL/errors";
 import type { SDLWindow } from "./types";
 import { SDL_EVENT_SIZE } from "./types";
 import * as T from "./types";
@@ -27,13 +34,13 @@ export class SDL {
   static INIT: Record<string, any>;
 
   // Runtime-attached namespaces (modules) for convenience
-  static Window: any;
-  static Display: any;
-  static Input: any;
-  static Renderer: any;
-  static Events: any;
-  static Clipboard: any;
-  static Errors: any;
+  static Window: typeof WindowModule;
+  static Display: typeof DisplayModule;
+  static Input: typeof InputModule;
+  static Renderer: typeof RendererModule;
+  static Events: typeof EventsModule;
+  static Clipboard: typeof ClipboardModule;
+  static Errors: typeof ErrorsModule;
 
   // core helpers remain on SDL
 
