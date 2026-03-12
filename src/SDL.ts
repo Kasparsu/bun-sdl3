@@ -46,6 +46,19 @@ function pick(prefix: string) {
 (SDL as any).Display = Display;
 (SDL as any).Input = Input;
 (SDL as any).Renderer = Renderer;
+(function attachInitFlags() {
+  function pick(prefix: string) {
+    const out: Record<string, any> = {};
+    for (const k in T) {
+      if (k.startsWith(prefix)) {
+        out[k.slice(prefix.length)] = (T as any)[k];
+      }
+    }
+    return out;
+  }
+
+  (SDL as any).InitFlags = pick("SDL_INIT_");
+})();
 (SDL as any).Events = Events;
 (SDL as any).Clipboard = Clipboard;
 (SDL as any).Errors = Errors;
