@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Bun (for typechecking)
+        run: |
+          curl -fsSL https://bun.sh/install | bash -s -- -y
+          export BUN_INSTALL="$HOME/.bun"
+          echo "$BUN_INSTALL/bin" >> $GITHUB_PATH
+
+      - name: Install deps
+        run: |
+          bun install --no-save
+
+      - name: Typecheck
+        run: |
+          bun tsc --noEmit
+
+      - name: Install ESLint
+        run: |
+          npm install --no-save eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+
+      - name: Lint
+        run: |
+          npx eslint --ext .ts src --max-warnings 0

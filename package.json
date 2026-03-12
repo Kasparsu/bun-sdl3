@@ -3,7 +3,10 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "install": "sh ./script/build-sdl3.sh"
+    "install": "sh ./script/build-sdl3.sh",
+    "typecheck": "bun tsc --noEmit",
+    "lint": "eslint --ext .ts src --max-warnings 0 || true",
+    "ci": "npm run typecheck && npm run lint"
   },
   "devDependencies": {
     "@types/bun": "latest"
