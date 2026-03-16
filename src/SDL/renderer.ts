@@ -179,8 +179,8 @@ export function present(renderer: any): boolean {
   return Boolean(sdl.SDL_RenderPresent(renderer as any));
 }
 
-export function renderDebugText(renderer: any, x: number, y: number, textPtr: Pointer): boolean {
-  return Boolean((sdl as any).SDL_RenderDebugText(renderer as any, x, y, textPtr as any));
+export function renderDebugText(renderer: any, x: number, y: number, text: string): boolean {
+  return Boolean((sdl as any).SDL_RenderDebugText(renderer as any, x, y, Buffer.from(text + "\0")));
 }
 
 export function addVulkanRenderSemaphores(renderer: any, waitSemaphoresPtr: Pointer, signalSemaphoresPtr: Pointer): boolean {
