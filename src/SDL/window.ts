@@ -104,3 +104,32 @@ export function createWithProperties(propsPtr: Pointer): SDLWindow {
 export function destroySurface(window: SDLWindow): void {
   sdl.SDL_DestroyWindowSurface(window as any);
 }
+
+// Return the SDL_Surface associated with a window
+export function getWindowSurface(window: SDLWindow) {
+  return sdl.SDL_GetWindowSurface(window as any) as Pointer as any;
+}
+
+// Destroy a standalone SDL_Surface
+export function destroySurfaceObject(surface: any): void {
+  sdl.SDL_DestroySurface(surface as any);
+}
+
+// Update the window's surface (flip / present)
+export function updateWindowSurface(window: SDLWindow): boolean {
+  return Boolean(sdl.SDL_UpdateWindowSurface(window as any));
+}
+
+// Display helpers
+export function getPrimaryDisplay(): number {
+  return sdl.SDL_GetPrimaryDisplay() as number;
+}
+
+export function getDisplayBounds(displayID: number): { x: number; y: number; w: number; h: number } | null {
+  const buf = new ArrayBuffer(16);
+  const p = ptr(buf);
+  const ok = Boolean(sdl.SDL_GetDisplayBounds(displayID, p));
+  if (!ok) return null;
+  const dv = new DataView(buf);
+  return { x: dv.getInt32(0, true), y: dv.getInt32(4, true), w: dv.getInt32(8, true), h: dv.getInt32(12, true) };
+}
