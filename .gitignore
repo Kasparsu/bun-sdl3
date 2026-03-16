@@ -35,3 +35,8 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # Generated script outputs
 /script/generated-ffi-*.txt
 
+# Compare/report outputs
+/script/compare-*.txt
+/script/*-compare-*.txt
+
+
