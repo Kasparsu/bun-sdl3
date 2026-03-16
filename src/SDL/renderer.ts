@@ -136,6 +136,16 @@ export function getRenderSafeArea(renderer: any): { x: number; y: number; w: num
   return { x: dv.getInt32(0, true), y: dv.getInt32(4, true), w: dv.getInt32(8, true), h: dv.getInt32(12, true) };
 }
 
+export function getRenderOutputSize(renderer: any): { w: number; h: number } | null {
+  const buf = new ArrayBuffer(8);
+  const p0 = ptr(new Uint8Array(buf, 0));
+  const p1 = ptr(new Uint8Array(buf, 4));
+  const ok = Boolean(sdl.SDL_GetRenderOutputSize(renderer as any, p0, p1));
+  if (!ok) return null;
+  const dv = new DataView(buf);
+  return { w: dv.getInt32(0, true), h: dv.getInt32(4, true) };
+}
+
 export function getRenderScale(renderer: any): { x: number; y: number } | null {
   const buf = new ArrayBuffer(8);
   const ptrBuf = ptr(buf);
