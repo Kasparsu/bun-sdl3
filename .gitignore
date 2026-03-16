@@ -39,4 +39,8 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 /script/compare-*.txt
 /script/*-compare-*.txt
 
+# Generated JSON reports from scripts
+/script/*.json
+
+
 
