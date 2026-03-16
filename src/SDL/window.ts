@@ -88,3 +88,19 @@ export function restore(window: SDLWindow): boolean {
 export function setFullscreen(window: SDLWindow, fullscreen: boolean): boolean {
   return Boolean(sdl.SDL_SetWindowFullscreen(window as any, fullscreen));
 }
+
+export function raise(window: SDLWindow): boolean {
+  return Boolean(sdl.SDL_RaiseWindow(window as any));
+}
+
+export function createPopup(parent: SDLWindow, offset_x: number, offset_y: number, w: number, h: number, flags: number | bigint): SDLWindow {
+  return sdl.SDL_CreatePopupWindow(parent as any, offset_x, offset_y, w, h, flags as any) as Pointer as SDLWindow;
+}
+
+export function createWithProperties(propsPtr: Pointer): SDLWindow {
+  return sdl.SDL_CreateWindowWithProperties(propsPtr) as Pointer as SDLWindow;
+}
+
+export function destroySurface(window: SDLWindow): void {
+  sdl.SDL_DestroyWindowSurface(window as any);
+}

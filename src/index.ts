@@ -42,7 +42,9 @@ type SDLAPI = {
   SDL_SetWindowIcon(window: Pointer, icon: Pointer): boolean;
   SDL_FlashWindow(window: Pointer, operation: number): boolean;
   SDL_ShowSimpleMessageBox(flags: number, title: CString, message: CString, window: Pointer): boolean;
-
+  SDL_CreatePopupWindow(parent: Pointer, offset_x: number, offset_y: number, w: number, h: number, flags: number | bigint): Pointer;
+  SDL_CreateWindowWithProperties(props: Pointer): Pointer;
+  SDL_DestroyWindowSurface(window: Pointer): void;
   // events
   SDL_PollEvent(eventPtr: Pointer): boolean;
   SDL_WaitEvent(eventPtr: Pointer): boolean;
@@ -58,6 +60,87 @@ type SDLAPI = {
   SDL_UnlockSurface(surface: Pointer): void;
 
   // renderer / textures
+  SDL_EGL_GetCurrentConfig(): Pointer;
+  SDL_EGL_GetCurrentDisplay(): Pointer;
+  SDL_EGL_GetProcAddress(name: CString): Pointer;
+  SDL_EGL_GetWindowSurface(window: Pointer): Pointer;
+  SDL_EGL_SetAttributeCallbacks(callbacks: Pointer): void;
+  SDL_GetClosestFullscreenDisplayMode(displayID: number, modePtr: Pointer): Pointer;
+  SDL_GetCurrentDisplayMode(displayID: number, modePtr: Pointer): Pointer;
+  SDL_GetCurrentDisplayOrientation(displayID: number): number;
+  SDL_GetCurrentVideoDriver(): CString;
+  SDL_GetDesktopDisplayMode(displayID: number, modePtr: Pointer): Pointer;
+  SDL_GetDisplayForPoint(x: number, y: number): number;
+  SDL_GetDisplayForRect(rectPtr: Pointer): number;
+  SDL_GetDisplayForWindow(window: Pointer): number;
+    SDL_RaiseWindow(window: Pointer): boolean;
+  SDL_GetDisplayProperties(displayID: number): Pointer;
+  SDL_GetDisplayUsableBounds(displayID: number, rectPtr: Pointer): boolean;
+  SDL_GetGrabbedWindow(): Pointer;
+  SDL_GetNaturalDisplayOrientation(displayID: number): number;
+  SDL_GetNumVideoDrivers(): number;
+  SDL_GetSystemTheme(): number;
+  SDL_GetVideoDriver(index: number): CString;
+  SDL_GetWindowAspectRatio(window: Pointer, wPtr: Pointer, hPtr: Pointer): boolean;
+  SDL_GetWindowBordersSize(window: Pointer, top: Pointer, left: Pointer, bottom: Pointer, right: Pointer): boolean;
+  SDL_GetWindowFromID(id: number): Pointer;
+  SDL_GetWindowFullscreenMode(window: Pointer): number;
+  SDL_GetWindowICCProfile(window: Pointer): Pointer;
+  SDL_GetWindowID(window: Pointer): number;
+  SDL_GetWindowKeyboardGrab(window: Pointer): boolean;
+  SDL_GetWindowMaximumSize(window: Pointer, wPtr: Pointer, hPtr: Pointer): boolean;
+  SDL_GetWindowMouseRect(window: Pointer, rectPtr: Pointer): boolean;
+  SDL_GetWindowOpacity(window: Pointer): number;
+  SDL_GetWindowParent(window: Pointer): Pointer;
+  SDL_GetWindowPixelFormat(window: Pointer): number;
+  SDL_GetWindowProgressState(window: Pointer): number;
+  SDL_GetWindowProgressValue(window: Pointer, currentPtr: Pointer, totalPtr: Pointer): boolean;
+  SDL_GetWindowProperties(window: Pointer): Pointer;
+  SDL_GetWindows(countPtr: Pointer): Pointer;
+  SDL_GetWindowSafeArea(window: Pointer, rectPtr: Pointer): boolean;
+  SDL_GetWindowSizeInPixels(window: Pointer, wPtr: Pointer, hPtr: Pointer): boolean;
+  SDL_GetWindowSurfaceVSync(window: Pointer): boolean;
+  SDL_GL_CreateContext(window: Pointer): Pointer;
+  SDL_GL_DestroyContext(ctx: Pointer): void;
+  SDL_GL_ExtensionSupported(name: CString): boolean;
+  SDL_GL_GetAttribute(attr: number, valuePtr: Pointer): boolean;
+  SDL_GL_GetCurrentContext(): Pointer;
+  SDL_GL_GetCurrentWindow(): Pointer;
+  SDL_GL_GetProcAddress(name: CString): Pointer;
+  SDL_GL_GetSwapInterval(): number;
+  SDL_GL_LoadLibrary(path: CString): boolean;
+  SDL_GL_MakeCurrent(window: Pointer, ctx: Pointer): boolean;
+  SDL_GL_ResetAttributes(): void;
+  SDL_GL_SetAttribute(attr: number, value: number): boolean;
+  SDL_GL_SetSwapInterval(interval: number): boolean;
+  SDL_GL_SwapWindow(window: Pointer): void;
+  SDL_GL_UnloadLibrary(): void;
+  SDL_SetWindowAlwaysOnTop(window: Pointer, onTop: boolean): boolean;
+  SDL_SetWindowAspectRatio(window: Pointer, wPtr: Pointer, hPtr: Pointer): boolean;
+  SDL_SetWindowBordered(window: Pointer, bordered: boolean): boolean;
+  SDL_SetWindowFillDocument(window: Pointer, fill: boolean): boolean;
+  SDL_SetWindowFocusable(window: Pointer, focusable: boolean): boolean;
+  SDL_SetWindowFullscreenMode(window: Pointer, mode: number): boolean;
+  SDL_SetWindowHitTest(window: Pointer, callbackPtr: Pointer): boolean;
+  SDL_SetWindowKeyboardGrab(window: Pointer, grabbed: boolean): boolean;
+  SDL_SetWindowMaximumSize(window: Pointer, max_w: number, max_h: number): boolean;
+  SDL_SetWindowMinimumSize(window: Pointer, min_w: number, min_h: number): boolean;
+  SDL_SetWindowModal(window: Pointer, modal: boolean): boolean;
+  SDL_SetWindowMouseGrab(window: Pointer, grabbed: boolean): boolean;
+  SDL_SetWindowMouseRect(window: Pointer, rectPtr: Pointer): boolean;
+  SDL_SetWindowOpacity(window: Pointer, opacity: number): boolean;
+  SDL_SetWindowParent(window: Pointer, parent: Pointer): boolean;
+  SDL_SetWindowPosition(window: Pointer, x: number, y: number): boolean;
+  SDL_SetWindowProgressState(window: Pointer, state: number): boolean;
+  SDL_SetWindowProgressValue(window: Pointer, current: number, total: number): boolean;
+  SDL_SetWindowResizable(window: Pointer, resizable: boolean): boolean;
+  SDL_SetWindowShape(window: Pointer, shapePtr: Pointer): boolean;
+  SDL_SetWindowSize(window: Pointer, w: number, h: number): boolean;
+  SDL_SetWindowSurfaceVSync(window: Pointer, vsync: boolean): boolean;
+  SDL_ShowWindowSystemMenu(window: Pointer, x: number, y: number): boolean;
+  SDL_SyncWindow(window: Pointer): boolean;
+  SDL_UpdateWindowSurfaceRects(window: Pointer, rectsPtr: Pointer, count: number): boolean;
+  SDL_WindowHasSurface(window: Pointer): boolean;
   SDL_CreateRenderer(window: Pointer, name: Pointer): Pointer;
   SDL_DestroyRenderer(renderer: Pointer): void;
   SDL_SetRenderDrawColor(renderer: Pointer, r: number, g: number, b: number, a: number): boolean;
@@ -73,6 +156,23 @@ type SDLAPI = {
   SDL_SetRenderDrawBlendMode(renderer: Pointer, blendMode: number): boolean;
   SDL_RenderDebugText(renderer: Pointer, x: number, y: number, str: CString): boolean;
   SDL_RenderReadPixels(renderer: Pointer, rectPtr: Pointer): Pointer;
+  SDL_CreateRendererWithProperties(window: Pointer, name: Pointer, propsPtr: Pointer): Pointer;
+  SDL_CreateSoftwareRenderer(surface: Pointer): Pointer;
+  SDL_CreateTextureWithProperties(renderer: Pointer, format: number, access: number, w: number, h: number, propsPtr: Pointer): Pointer;
+  SDL_CreateWindowAndRenderer(w: number, h: number, flags: number | bigint, windowPtr: Pointer, rendererPtr: Pointer): number;
+  SDL_FlushRenderer(renderer: Pointer): boolean;
+  SDL_GDKResumeRenderer(renderer: Pointer): boolean;
+  SDL_GDKSuspendRenderer(renderer: Pointer): boolean;
+  SDL_GetNumRenderDrivers(): number;
+  SDL_GetRenderDriver(index: number): CString;
+  SDL_GetRenderer(window: Pointer): Pointer;
+  SDL_GetRendererFromTexture(texture: Pointer): Pointer;
+  SDL_GetRenderWindow(renderer: Pointer): Pointer;
+  SDL_GetRenderViewport(renderer: Pointer, rectPtr: Pointer): boolean;
+  SDL_GetRenderSafeArea(renderer: Pointer, rectPtr: Pointer): boolean;
+  SDL_GetRenderScale(renderer: Pointer, scalePtr: Pointer): boolean;
+  SDL_GetRenderMetalCommandEncoder(renderer: Pointer): Pointer;
+  SDL_GetRenderMetalLayer(renderer: Pointer): Pointer;
 
   // keyboard
   SDL_GetKeyboardState(numKeysPtr: Pointer): Pointer;
@@ -104,6 +204,16 @@ type SDLAPI = {
   SDL_RenderTexture(renderer: Pointer, texture: Pointer, srcrect: Pointer, dstrect: Pointer): boolean;
   SDL_RenderTextureRotated(renderer: Pointer, texture: Pointer, srcrect: Pointer, dstrect: Pointer, angle: number, centerPtr: Pointer, flip: number): boolean;
   SDL_GetTextureSize(texture: Pointer, wPtr: Pointer, hPtr: Pointer): boolean;
+  SDL_GetTextureAlphaMod(texture: Pointer, alphaPtr: Pointer): boolean;
+  SDL_GetTextureAlphaModFloat(texture: Pointer, alphaPtr: Pointer): boolean;
+  SDL_GetTextureBlendMode(texture: Pointer, blendModePtr: Pointer): boolean;
+  SDL_GetTextureColorMod(texture: Pointer, rPtr: Pointer, gPtr: Pointer, bPtr: Pointer): boolean;
+  SDL_GetTextureColorModFloat(texture: Pointer, rPtr: Pointer, gPtr: Pointer, bPtr: Pointer): boolean;
+  SDL_GetTexturePalette(texture: Pointer): Pointer;
+  SDL_GetTextureProperties(texture: Pointer): Pointer;
+  SDL_GetTextureScaleMode(texture: Pointer): number;
+  SDL_LockTexture(texture: Pointer, rectPtr: Pointer, pixelsPtr: Pointer, pitchPtr: Pointer): boolean;
+  SDL_LockTextureToSurface(texture: Pointer): Pointer;
   SDL_SetTextureBlendMode(texture: Pointer, blendMode: number): boolean;
   SDL_SetTextureAlphaModFloat(texture: Pointer, alpha: number): boolean;
   SDL_SetTextureColorModFloat(texture: Pointer, r: number, g: number, b: number): boolean;
@@ -136,6 +246,13 @@ type SDLAPI = {
   SDL_ConvertEventToRenderCoordinates(renderer: Pointer, eventPtr: Pointer): boolean;
   SDL_RenderCoordinatesFromWindow(renderer: Pointer, window_x: number, window_y: number, xPtr: Pointer, yPtr: Pointer): boolean;
   SDL_GetRendererName(renderer: Pointer): CString;
+  SDL_AddVulkanRenderSemaphores(renderer: Pointer, wait_semaphores: Pointer, signal_semaphores: Pointer): boolean;
+  SDL_GetDefaultTextureScaleMode(): number;
+  SDL_GetRenderColorScale(renderer: Pointer, rPtr: Pointer, gPtr: Pointer, bPtr: Pointer, aPtr: Pointer): boolean;
+  SDL_GetRenderDrawColorFloat(renderer: Pointer, rPtr: Pointer, gPtr: Pointer, bPtr: Pointer, aPtr: Pointer): boolean;
+  SDL_GetRenderDriver(index: number): CString;
+  SDL_GetRendererProperties(renderer: Pointer): Pointer;
+  SDL_RenderCoordinatesToWindow(renderer: Pointer, x: number, y: number, window_xPtr: Pointer, window_yPtr: Pointer): boolean;
 
   // clipboard
   SDL_SetClipboardText(text: CString): boolean;
@@ -324,6 +441,11 @@ const _dl = dlopen(libPath("SDL3", "SDL3"), {
     args: [FFIType.pointer],
     returns: FFIType.bool,
   },
+  // bool SDL_RaiseWindow(SDL_Window* window)
+  SDL_RaiseWindow: {
+    args: [FFIType.pointer],
+    returns: FFIType.bool,
+  },
 
   // --- Window limits ---
 
@@ -375,6 +497,11 @@ const _dl = dlopen(libPath("SDL3", "SDL3"), {
     args: [FFIType.u32],
     returns: FFIType.f32,
   },
+  // SDL_DisplayID SDL_GetDisplayForWindow(SDL_Window* window)
+  SDL_GetDisplayForWindow: {
+    args: [FFIType.pointer],
+    returns: FFIType.u32,
+  },
   // float SDL_GetWindowPixelDensity(SDL_Window* window)
   SDL_GetWindowPixelDensity: {
     args: [FFIType.pointer],
@@ -394,6 +521,21 @@ const _dl = dlopen(libPath("SDL3", "SDL3"), {
   SDL_ShowSimpleMessageBox: {
     args: [FFIType.u32, FFIType.cstring, FFIType.cstring, FFIType.pointer],
     returns: FFIType.bool,
+  },
+  // SDL_Window* SDL_CreatePopupWindow(SDL_Window* parent, int offset_x, int offset_y, int w, int h, SDL_WindowFlags flags)
+  SDL_CreatePopupWindow: {
+    args: [FFIType.pointer, FFIType.i32, FFIType.i32, FFIType.i32, FFIType.i32, FFIType.u64],
+    returns: FFIType.pointer,
+  },
+  // SDL_Window* SDL_CreateWindowWithProperties(SDL_PropertiesID props)
+  SDL_CreateWindowWithProperties: {
+    args: [FFIType.pointer],
+    returns: FFIType.pointer,
+  },
+  // void SDL_DestroyWindowSurface(SDL_Window* window)
+  SDL_DestroyWindowSurface: {
+    args: [FFIType.pointer],
+    returns: FFIType.void,
   },
   // bool SDL_ScreenSaverEnabled(void)
   SDL_ScreenSaverEnabled: {
@@ -544,6 +686,23 @@ const _dl = dlopen(libPath("SDL3", "SDL3"), {
     args: [FFIType.pointer, FFIType.pointer],
     returns: FFIType.pointer,
   },
+  SDL_CreateRendererWithProperties: { args: [FFIType.pointer, FFIType.pointer, FFIType.pointer], returns: FFIType.pointer },
+  SDL_CreateSoftwareRenderer: { args: [FFIType.pointer], returns: FFIType.pointer },
+  SDL_CreateTextureWithProperties: { args: [FFIType.pointer, FFIType.u32, FFIType.i32, FFIType.i32, FFIType.i32, FFIType.pointer], returns: FFIType.pointer },
+  SDL_CreateWindowAndRenderer: { args: [FFIType.i32, FFIType.i32, FFIType.u64, FFIType.pointer, FFIType.pointer], returns: FFIType.i32 },
+  SDL_FlushRenderer: { args: [FFIType.pointer], returns: FFIType.bool },
+  SDL_GDKResumeRenderer: { args: [FFIType.pointer], returns: FFIType.bool },
+  SDL_GDKSuspendRenderer: { args: [FFIType.pointer], returns: FFIType.bool },
+  SDL_GetNumRenderDrivers: { args: [], returns: FFIType.i32 },
+  SDL_GetRenderDriver: { args: [FFIType.i32], returns: FFIType.cstring },
+  SDL_GetRenderer: { args: [FFIType.pointer], returns: FFIType.pointer },
+  SDL_GetRendererFromTexture: { args: [FFIType.pointer], returns: FFIType.pointer },
+  SDL_GetRenderWindow: { args: [FFIType.pointer], returns: FFIType.pointer },
+  SDL_GetRenderViewport: { args: [FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_GetRenderSafeArea: { args: [FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_GetRenderScale: { args: [FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_GetRenderMetalCommandEncoder: { args: [FFIType.pointer], returns: FFIType.pointer },
+  SDL_GetRenderMetalLayer: { args: [FFIType.pointer], returns: FFIType.pointer },
 
   // --- Keyboard ---
 
@@ -671,6 +830,35 @@ const _dl = dlopen(libPath("SDL3", "SDL3"), {
     args: [FFIType.pointer, FFIType.pointer, FFIType.pointer],
     returns: FFIType.bool,
   },
+  SDL_GetTextureAlphaMod: { args: [FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_GetTextureAlphaModFloat: { args: [FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_GetTextureBlendMode: { args: [FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_GetTextureColorMod: { args: [FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_GetTextureColorModFloat: { args: [FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_GetTexturePalette: { args: [FFIType.pointer], returns: FFIType.pointer },
+  SDL_GetTextureProperties: { args: [FFIType.pointer], returns: FFIType.pointer },
+  SDL_GetTextureScaleMode: { args: [FFIType.pointer], returns: FFIType.i32 },
+  SDL_LockTexture: { args: [FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_LockTextureToSurface: { args: [FFIType.pointer], returns: FFIType.pointer },
+  SDL_RenderFillRects: { args: [FFIType.pointer, FFIType.pointer, FFIType.i32], returns: FFIType.bool },
+  SDL_RenderPoints: { args: [FFIType.pointer, FFIType.pointer, FFIType.i32], returns: FFIType.bool },
+  SDL_RenderRects: { args: [FFIType.pointer, FFIType.pointer, FFIType.i32], returns: FFIType.bool },
+  SDL_RenderGeometryRaw: { args: [FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.i32, FFIType.pointer, FFIType.i32, FFIType.i32], returns: FFIType.bool },
+  SDL_RenderTexture9Grid: { args: [FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_RenderTexture9GridTiled: { args: [FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_RenderTextureAffine: { args: [FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.f64], returns: FFIType.bool },
+  SDL_RenderTextureTiled: { args: [FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.i32, FFIType.i32], returns: FFIType.bool },
+  SDL_RenderViewportSet: { args: [FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_SetDefaultTextureScaleMode: { args: [FFIType.i32], returns: FFIType.bool },
+  SDL_SetRenderColorScale: { args: [FFIType.pointer, FFIType.f32, FFIType.f32, FFIType.f32, FFIType.f32], returns: FFIType.bool },
+  SDL_SetRenderDrawColorFloat: { args: [FFIType.pointer, FFIType.f32, FFIType.f32, FFIType.f32, FFIType.f32], returns: FFIType.bool },
+  SDL_SetRenderScale: { args: [FFIType.pointer, FFIType.f32, FFIType.f32], returns: FFIType.bool },
+  SDL_SetTextureAlphaMod: { args: [FFIType.pointer, FFIType.u8], returns: FFIType.bool },
+  SDL_SetTextureColorMod: { args: [FFIType.pointer, FFIType.u8, FFIType.u8, FFIType.u8], returns: FFIType.bool },
+  SDL_SetTexturePalette: { args: [FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
+  SDL_UnlockTexture: { args: [FFIType.pointer], returns: FFIType.bool },
+  SDL_UpdateNVTexture: { args: [FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.i32], returns: FFIType.bool },
+  SDL_UpdateYUVTexture: { args: [FFIType.pointer, FFIType.pointer, FFIType.pointer, FFIType.i32, FFIType.pointer, FFIType.pointer], returns: FFIType.bool },
   // bool SDL_SetTextureBlendMode(SDL_Texture* texture, SDL_BlendMode blendMode)
   SDL_SetTextureBlendMode: {
     args: [FFIType.pointer, FFIType.u32],
@@ -1187,6 +1375,10 @@ const _dl = dlopen(libPath("SDL3", "SDL3"), {
     args: [FFIType.pointer],
     returns: FFIType.pointer,
   },
+  // (Additional bindings may be added here if needed)
+  // (Additional bindings may be added here if needed)
+
+  // (Additional bindings may be added here if needed)
 });
 
 const sdl = _dl.symbols as unknown as SDLAPI;

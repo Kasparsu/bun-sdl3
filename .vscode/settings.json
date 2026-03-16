@@ -3,6 +3,10 @@
         "/^bun tsc --noEmit$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "/^bun tsc$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }
