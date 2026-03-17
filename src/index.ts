@@ -231,6 +231,16 @@ type SDLAPI = {
   SDL_CreateSurface(width: number, height: number, format: number): Pointer;
   SDL_SetSurfaceColorKey(surface: Pointer, enabled: boolean, key: number): boolean;
 
+  // --- SDLTest (test helpers) ---
+  SDLTest_CommonCreateState(argv: Pointer, flags: number): Pointer;
+  SDLTest_CommonDefaultArgs(state: Pointer, argc: number, argv: Pointer): boolean;
+  SDLTest_CommonInit(state: Pointer): boolean;
+  SDLTest_CommonQuit(state: Pointer): void;
+  SDLTest_CommonArg(state: Pointer, index: number): number;
+  SDLTest_CommonLogUsage(state: Pointer, progname: CString, options: Pointer): void;
+  SDLTest_CommonEvent(state: Pointer, eventPtr: Pointer, donePtr: Pointer): boolean;
+  SDLTest_CommonDestroyState(state: Pointer): void;
+
   // clipping
   SDL_SetRenderClipRect(renderer: Pointer, rectPtr: Pointer): boolean;
   SDL_GetRenderClipRect(renderer: Pointer, rectPtr: Pointer): boolean;
@@ -1023,6 +1033,48 @@ const _dl = dlopen(libPath("SDL3", "SDL3"), {
   SDL_HasClipboardText: {
     args: [],
     returns: FFIType.bool,
+  },
+
+  // --- SDLTest (test helpers) ---
+  // SDLTest_CommonState* SDLTest_CommonCreateState(char** argv, int flags)
+  SDLTest_CommonCreateState: {
+    args: [FFIType.pointer, FFIType.i32],
+    returns: FFIType.pointer,
+  },
+  // bool SDLTest_CommonDefaultArgs(SDLTest_CommonState* state, int argc, char** argv)
+  SDLTest_CommonDefaultArgs: {
+    args: [FFIType.pointer, FFIType.i32, FFIType.pointer],
+    returns: FFIType.bool,
+  },
+  // bool SDLTest_CommonInit(SDLTest_CommonState* state)
+  SDLTest_CommonInit: {
+    args: [FFIType.pointer],
+    returns: FFIType.bool,
+  },
+  // void SDLTest_CommonQuit(SDLTest_CommonState* state)
+  SDLTest_CommonQuit: {
+    args: [FFIType.pointer],
+    returns: FFIType.void,
+  },
+  // int SDLTest_CommonArg(SDLTest_CommonState* state, int index)
+  SDLTest_CommonArg: {
+    args: [FFIType.pointer, FFIType.i32],
+    returns: FFIType.i32,
+  },
+  // void SDLTest_CommonLogUsage(SDLTest_CommonState* state, const char* progname, SDLTest_Options* options)
+  SDLTest_CommonLogUsage: {
+    args: [FFIType.pointer, FFIType.cstring, FFIType.pointer],
+    returns: FFIType.void,
+  },
+  // bool SDLTest_CommonEvent(SDLTest_CommonState* state, SDL_Event* event, int* done)
+  SDLTest_CommonEvent: {
+    args: [FFIType.pointer, FFIType.pointer, FFIType.pointer],
+    returns: FFIType.bool,
+  },
+  // void SDLTest_CommonDestroyState(SDLTest_CommonState* state)
+  SDLTest_CommonDestroyState: {
+    args: [FFIType.pointer],
+    returns: FFIType.void,
   },
 
   // --- Text input ---
