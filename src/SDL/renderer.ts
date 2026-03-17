@@ -183,6 +183,12 @@ export function renderDebugText(renderer: any, x: number, y: number, text: strin
   return Boolean((sdl as any).SDL_RenderDebugText(renderer as any, x, y, Buffer.from(text + "\0")));
 }
 
+export function renderReadPixels(renderer: any, rectPtr: Pointer | null) {
+  const surf = sdl.SDL_RenderReadPixels(renderer as any, (rectPtr ?? null) as any);
+  if (!surf) return null;
+  return surf as Pointer as any;
+}
+
 export function addVulkanRenderSemaphores(renderer: any, waitSemaphoresPtr: Pointer, signalSemaphoresPtr: Pointer): boolean {
   return Boolean(sdl.SDL_AddVulkanRenderSemaphores(renderer as any, waitSemaphoresPtr as any, signalSemaphoresPtr as any));
 }
